@@ -18,7 +18,7 @@ public class User {
     private String nickname;
 
     @OneToMany(mappedBy = "user")
-    private List<TripSurvey> tripSurveyList = new ArrayList<>();
+    private List<Survey> surveyList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;

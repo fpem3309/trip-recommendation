@@ -12,7 +12,7 @@ public class TripRecommendation {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_survey_id")
-    private TripSurvey tripSurvey;
+    private Survey survey;
 
     @Enumerated(EnumType.STRING)
     private Badge badge;
