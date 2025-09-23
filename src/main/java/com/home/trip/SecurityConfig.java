@@ -22,4 +22,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()); // REST API 서버니까 CSRF 끄기
         return http.build();
     }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
