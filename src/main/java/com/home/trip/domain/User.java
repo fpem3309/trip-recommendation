@@ -23,8 +23,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
+
+    private String userId;
+    private String password;
     private String email;
     private String nickname;
 
@@ -43,14 +47,16 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static User createUser(UserDto userDto) {
+    public static User createUser(UserDto userDto, String encodedPassword) {
         return User.builder()
-        .email(userDto.getEmail())
-        .nickname(userDto.getNickname())
-        .role(userDto.getRole())
-        .oauth_provider(userDto.getOauthProvider())
-        .createdAt(userDto.getCreatedAt())
-        .updatedAt(userDto.getUpdatedAt())
+                .userId(userDto.getUserId())
+                .password(encodedPassword)
+                .email(userDto.getEmail())
+                .nickname(userDto.getNickname())
+                .role(userDto.getRole())
+                .oauth_provider(userDto.getOauthProvider())
+                .createdAt(userDto.getCreatedAt())
+                .updatedAt(userDto.getUpdatedAt())
                 .build();
     }
 }
