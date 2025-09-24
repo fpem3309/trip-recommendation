@@ -19,3 +19,7 @@ logging:
   level:
     org.hibernate.SQL: debug
 #    org.hibernate.orm.jdbc.bind: trace
+
+jwt:
+  expiration_time: 3600000 # 1시간
+  secret: 7KeR7JeQ7ISc7ZWY64qUIOyKpO2UhOungeu2gO2KuOuekSBqcGHrnpEg7Iuc7YGQ66as7YuwIOyYiOygnA==

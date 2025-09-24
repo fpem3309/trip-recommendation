@@ -1,6 +1,7 @@
 package com.home.trip;
 
 import com.home.trip.service.CustomUserDetailService;
+import com.home.trip.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomUserDetailService userDetailsService;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
@@ -36,7 +38,7 @@ public class SecurityConfig {
 
                 )
                 // ⭐ 커스텀 필터 등록 (UsernamePasswordAuthenticationFilter 대체)
-                .addFilterBefore(new JsonUsernamePasswordAuthFilter(authenticationManager),
+                .addFilterBefore(new JsonUsernamePasswordAuthFilter(authenticationManager, jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
