@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "회원", description = "회원 관련 API")
 @RestController
-@RequestMapping("/api-user")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/user")
+    @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "새로운 회원을 등록")
     public void joinUser(@RequestBody UserDto userDto) {
         userService.join(userDto);
