@@ -1,4 +1,4 @@
-package com.home.trip;
+package com.home.trip.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.trip.domain.dto.UserLoginDto;

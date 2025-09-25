@@ -1,5 +1,6 @@
 package com.home.trip.util;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -30,8 +31,31 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username) // 주체
                 .setIssuedAt(new Date()) // 발급 시간
-                .setExpiration(new Date(accessTokenExpTime)) // 만료 시간
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpTime)) // 만료 시간
                 .signWith(secretKey) // 비밀키로 서명
                 .compact();
+    }
+
+    public boolean validateToken(String token) {
+
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Invalid JWT token", e);
+            return false;
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }

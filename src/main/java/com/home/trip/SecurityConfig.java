@@ -1,5 +1,7 @@
 package com.home.trip;
 
+import com.home.trip.filter.JsonUsernamePasswordAuthFilter;
+import com.home.trip.filter.JwtAuthenticationFilter;
 import com.home.trip.service.CustomUserDetailService;
 import com.home.trip.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +39,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 )
-                // ⭐ 커스텀 필터 등록 (UsernamePasswordAuthenticationFilter 대체)
+                // ⭐ 로그인용 커스텀 필터 등록 (UsernamePasswordAuthenticationFilter 대체)
                 .addFilterBefore(new JsonUsernamePasswordAuthFilter(authenticationManager, jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class)
+
+                // ⭐ JWT 검증 필터 등록
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
