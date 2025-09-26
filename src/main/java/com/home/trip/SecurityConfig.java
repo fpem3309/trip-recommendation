@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/swagger-ui/**", // ui
                                 "/v3/api-docs/**", // api 문서
+                                "/api/survey", // 설문
                                 "/api/auth/**" // 회원 관련
                         ).permitAll()
                         .anyRequest().authenticated()
