@@ -23,3 +23,8 @@ logging:
 jwt:
   expiration_time: 3600000 # 1시간
   secret: 7KeR7JeQ7ISc7ZWY64qUIOyKpO2UhOungeu2gO2KuOuekSBqcGHrnpEg7Iuc7YGQ66as7YuwIOyYiOygnA==
+
+openai:
+  api:
+    key: sk-
+  base-url: https://api.openai.com/v1
