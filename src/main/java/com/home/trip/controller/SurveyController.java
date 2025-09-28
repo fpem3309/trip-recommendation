@@ -24,9 +24,8 @@ public class SurveyController {
     @Operation(summary = "여행지 추천", description = "Open AI로 여행지 추천받기")
     @GetMapping("/{tripRecommendationId}/recommend")
     public ResponseEntity<RecommendDto> recommend(@PathVariable Long tripRecommendationId) {
-
-        RecommendDto result = surveyService.getRecommend(tripRecommendationId);
-        
-        return ResponseEntity.ok(result);
+        RecommendDto recommend = surveyService.getRecommend(tripRecommendationId); // 추천 내용
+        surveyService.updateRecommendation(tripRecommendationId, recommend); // DB 업데이트
+        return ResponseEntity.ok(recommend);
     }
 }

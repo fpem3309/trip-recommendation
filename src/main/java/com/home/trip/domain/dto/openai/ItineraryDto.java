@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ItineraryDto {
-    private int day;
+    private int dayNumber;
     private String plan;
 }

@@ -2,6 +2,7 @@ package com.home.trip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.home.trip.domain.Itinerary;
 import com.home.trip.domain.Survey;
 import com.home.trip.domain.TripRecommendation;
 import com.home.trip.domain.dto.SurveyDto;
@@ -31,7 +32,7 @@ public class SurveyService {
         tripRecommendationRepository.save(tripRecommendation);
     }
 
-    public RecommendDto getRecommend(Long tripRecommendationId)  {
+    public RecommendDto getRecommend(Long tripRecommendationId) {
         ObjectMapper objectMapper = new ObjectMapper();
         Survey findSurvey = surveyRepository.findById(tripRecommendationId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다."));
@@ -52,5 +53,15 @@ public class SurveyService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void updateRecommendation(Long tripRecommendationId, RecommendDto recommendDto) {
+        TripRecommendation tripRecommendation = tripRecommendationRepository.findById(tripRecommendationId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 추천입니다."));
+
+        recommendDto.getItinerary()
+                .forEach(dto -> tripRecommendation.addItinerary(Itinerary.createItinerary(dto)));
+
+        tripRecommendation.setRecommendationTrip(recommendDto);
     }
 }

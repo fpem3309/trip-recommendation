@@ -1,12 +1,15 @@
 package com.home.trip.domain;
 
+import com.home.trip.domain.dto.openai.RecommendDto;
 import com.home.trip.domain.enums.Badge;
 import com.home.trip.domain.enums.RecommendationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +24,17 @@ public class TripRecommendation {
     @Enumerated(EnumType.STRING)
     private Badge badge;
 
-    @Lob
-    private String recommendationContent;
+    private String city;
+    private String country;
+    private String tripType;
+    private String period;
+    private String recommendation;
+
+    @OneToMany(mappedBy = "tripRecommendation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Itinerary> itinerary = new ArrayList<>();
+
+    private String estimatedBudget;
+    private String bestSeason;
 
     @Enumerated(EnumType.STRING)
     private RecommendationStatus status;
@@ -31,9 +43,24 @@ public class TripRecommendation {
         return TripRecommendation.builder()
                 .survey(survey)
                 .badge(null)
-                .recommendationContent(null)
                 .status(RecommendationStatus.PENDING)
                 .build();
+    }
+
+    public void addItinerary(Itinerary item) {
+        itinerary.add(item);
+        item.setTripRecommendation(this);
+    }
+
+    public void setRecommendationTrip(RecommendDto recommendDto) {
+        this.city = recommendDto.getCity();
+        this.country = recommendDto.getCountry();
+        this.tripType = recommendDto.getTripType();
+        this.period = recommendDto.getPeriod();
+        this.recommendation = recommendDto.getRecommendation();
+        this.estimatedBudget = recommendDto.getEstimatedBudget();
+        this.bestSeason = recommendDto.getBestSeason();
+        this.status = RecommendationStatus.COMPLETED;
     }
 
 }
