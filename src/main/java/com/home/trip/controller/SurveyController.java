@@ -17,8 +17,10 @@ public class SurveyController {
 
     @Operation(summary = "설문 등록", description = "작성한 설문을 등록")
     @PostMapping
-    public void saveSurvey(@RequestBody SurveyDto surveyDto) {
-        surveyService.save(surveyDto);
+    public ResponseEntity<String> saveSurvey(@RequestBody SurveyDto surveyDto) {
+        Long surveyId = surveyService.save(surveyDto);
+        surveyService.recommendationAsync(surveyId);
+        return ResponseEntity.ok("done");
     }
 
     @Operation(summary = "여행지 추천", description = "Open AI로 여행지 추천받기")

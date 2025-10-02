@@ -12,6 +12,7 @@ import com.home.trip.repository.SurveyRepository;
 import com.home.trip.repository.TripRecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,16 +26,17 @@ public class SurveyService {
     private final TripRecommendationRepository tripRecommendationRepository;
     private final OpenAiService openAiService;
 
-    public void save(SurveyDto surveyDto) {
+    public Long save(SurveyDto surveyDto) {
         Survey survey = Survey.createSurvey(surveyDto);
         TripRecommendation tripRecommendation = TripRecommendation.createTripRecommendation(survey);
         surveyRepository.save(survey);
         tripRecommendationRepository.save(tripRecommendation);
+        return survey.getId();
     }
 
-    public RecommendDto getRecommend(Long tripRecommendationId) {
+    public RecommendDto getRecommend(Long surveyId) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Survey findSurvey = surveyRepository.findById(tripRecommendationId)
+        Survey findSurvey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다."));
 
         try {
@@ -45,8 +47,6 @@ public class SurveyService {
                     "설문 데이터:\n" + json;
 
             String travelRecommendation = openAiService.getTravelRecommendation(prompt);
-
-            log.info("travelRecommendation: {}", travelRecommendation);
 
             return objectMapper.readValue(travelRecommendation, RecommendDto.class);
 
@@ -63,5 +63,21 @@ public class SurveyService {
                 .forEach(dto -> tripRecommendation.addItinerary(Itinerary.createItinerary(dto)));
 
         tripRecommendation.setRecommendationTrip(recommendDto);
+    }
+
+    @Async
+    public void recommendationAsync(Long surveyId) {
+
+        try {
+            RecommendDto recommend = getRecommend(surveyId); // AI 추천 내용
+            log.info("recommend: {}, 5초 대기", recommend.getRecommendation());
+
+            Thread.sleep(5000); // 5초 대기
+
+            updateRecommendation(surveyId, recommend); // 설문 DB 업데이트
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+
     }
 }

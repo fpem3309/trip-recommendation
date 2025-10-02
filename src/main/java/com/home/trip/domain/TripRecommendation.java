@@ -31,6 +31,7 @@ public class TripRecommendation {
     private String recommendation;
 
     @OneToMany(mappedBy = "tripRecommendation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default // ❗️Builder로 객체를 생성하면 itinerary는 null 상태가 됨
     private List<Itinerary> itinerary = new ArrayList<>();
 
     private String estimatedBudget;
