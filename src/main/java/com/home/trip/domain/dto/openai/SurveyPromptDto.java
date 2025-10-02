@@ -11,9 +11,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class SurveyPromptDto {
     private TripType tripType;
-    private int period;
-    private int peopleCount;
-    private int budget;
+    private String period;
+    private String peopleCount;
+    private String budget;
 
     private PreferenceType preferenceType;
     private Transportation transportation;

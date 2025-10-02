@@ -33,9 +33,9 @@ public class Survey {
     @Enumerated(EnumType.STRING)
     private TripType tripType;
 
-    private int period;
-    private int peopleCount;
-    private int budget;
+    private String period;
+    private String peopleCount;
+    private String budget;
 
     @Enumerated(EnumType.STRING)
     private PreferenceType preferenceType;
