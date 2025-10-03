@@ -58,4 +58,16 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
     }
+
+    public String createGuestToken() {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + 1000 * 60 * 60); // 1시간
+
+        return Jwts.builder()
+                .setSubject("guest")
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(secretKey)
+                .compact();
+    }
 }

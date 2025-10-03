@@ -40,7 +40,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/swagger-ui/**", // ui
                                 "/v3/api-docs/**", // api 문서
-                                "/api/survey", // 설문
                                 "/api/survey/**", // 설문
                                 "/api/auth/**" // 회원 관련
                         ).permitAll()
@@ -81,6 +80,7 @@ public class SecurityConfig {
         corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        corsConfiguration.setExposedHeaders(List.of("X-Guest-Token"));
         corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
