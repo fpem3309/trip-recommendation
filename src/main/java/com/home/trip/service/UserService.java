@@ -21,4 +21,9 @@ public class UserService {
         User user = User.createUser(userDto, encodedPassword);
         userRepository.save(user);
     }
+
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(()-> new IllegalArgumentException("일치하는 회원이 없습니다."));
+    }
 }
