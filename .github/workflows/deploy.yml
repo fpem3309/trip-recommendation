@@ -37,6 +37,4 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            pkill -f 'java -jar' || true
-            nohup java -jar ~/app/build/libs/*SNAPSHOT.jar > ~/app/nohup.out 2>&1 &
-            echo "✅ Spring Boot successfully deployed!"
+            sh ~/app/start.sh
