@@ -1,10 +1,14 @@
 spring:
   datasource:
 #    url: jdbc:h2:tcp://localhost/~/trip-reco
-    url: jdbc:h2:mem:tripreco;
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:tripreco;
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
 
   jpa:
     hibernate:
@@ -14,6 +18,7 @@ spring:
         format_sql: true
         show_sql: true
         default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQLDialect
 #    open-in-view: false
 
 logging:
