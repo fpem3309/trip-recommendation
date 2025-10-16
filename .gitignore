@@ -12,6 +12,7 @@ logs/
 ### Spring Boot specific ###
 /target/
 /build/
+*.properties
 
 ### IntelliJ IDEA ###
 .idea/
