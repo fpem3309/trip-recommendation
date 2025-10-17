@@ -65,9 +65,7 @@ public class SurveyService {
         tripRecommendation.setRecommendationTrip(recommendDto);
     }
 
-    @Async
-    public void recommendationAsync(Long surveyId) {
-
+    public RecommendDto recommendationAsync(Long surveyId) {
         try {
             RecommendDto recommend = getRecommend(surveyId); // AI 추천 내용
             log.info("recommend: {}, 5초 대기", recommend.getRecommendation());
@@ -75,6 +73,7 @@ public class SurveyService {
             Thread.sleep(5000); // 5초 대기
 
             updateRecommendation(surveyId, recommend); // 설문 DB 업데이트
+            return recommend;
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
