@@ -12,7 +12,6 @@ import com.home.trip.repository.SurveyRepository;
 import com.home.trip.repository.TripRecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +42,12 @@ public class SurveyService {
             String json = objectMapper.writeValueAsString(SurveyPromptDto.createSurveyPromptDto(findSurvey));
 
             String prompt = "다음은 사용자가 작성한 여행 설문 응답이야. \n" +
-                    "이 데이터를 참고해서 위에서 제시한 JSON 포맷에 맞게 여행지를 추천해줘." +
                     "설문 데이터:\n" + json;
 
-            String travelRecommendation = openAiService.getTravelRecommendation(prompt);
+            String travelRecommendation = openAiService.getTravelRecommendation(prompt)
+                    .replaceAll("```", "")
+                    .replaceAll("\\)\\]\\)\\]\\)$", "")
+                    .trim();
 
             return objectMapper.readValue(travelRecommendation, RecommendDto.class);
 
@@ -65,18 +66,13 @@ public class SurveyService {
         tripRecommendation.setRecommendationTrip(recommendDto);
     }
 
-    public RecommendDto recommendationAsync(Long surveyId) {
+    public RecommendDto recommendation(Long surveyId) {
         try {
             RecommendDto recommend = getRecommend(surveyId); // AI 추천 내용
-            log.info("recommend: {}, 5초 대기", recommend.getRecommendation());
-
-            Thread.sleep(5000); // 5초 대기
-
             updateRecommendation(surveyId, recommend); // 설문 DB 업데이트
             return recommend;
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-
     }
 }

@@ -19,7 +19,7 @@ public class SurveyController {
     @PostMapping
     public ResponseEntity<RecommendDto> saveSurvey(@RequestBody SurveyDto surveyDto) {
         Long surveyId = surveyService.save(surveyDto);
-        RecommendDto recommendDto = surveyService.recommendationAsync(surveyId);
+        RecommendDto recommendDto = surveyService.recommendation(surveyId);
         return ResponseEntity.ok(recommendDto);
     }
 
