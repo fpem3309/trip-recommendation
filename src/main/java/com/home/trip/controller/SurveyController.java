@@ -15,19 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class SurveyController {
     private final SurveyService surveyService;
 
-    @Operation(summary = "설문 등록", description = "작성한 설문을 등록")
+    @Operation(summary = "설문 등록", description = "작성한 설문을 등록하고 AI 여행지 추천받기")
     @PostMapping
     public ResponseEntity<RecommendDto> saveSurvey(@RequestBody SurveyDto surveyDto) {
         Long surveyId = surveyService.save(surveyDto);
         RecommendDto recommendDto = surveyService.recommendation(surveyId);
         return ResponseEntity.ok(recommendDto);
-    }
-
-    @Operation(summary = "여행지 추천", description = "Open AI로 여행지 추천받기")
-    @GetMapping("/{tripRecommendationId}/recommend")
-    public ResponseEntity<RecommendDto> recommend(@PathVariable Long tripRecommendationId) {
-        RecommendDto recommend = surveyService.getRecommend(tripRecommendationId); // 추천 내용
-        surveyService.updateRecommendation(tripRecommendationId, recommend); // DB 업데이트
-        return ResponseEntity.ok(recommend);
     }
 }

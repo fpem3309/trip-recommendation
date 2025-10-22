@@ -56,8 +56,12 @@ public class SurveyService {
         }
     }
 
-    public void updateRecommendation(Long tripRecommendationId, RecommendDto recommendDto) {
-        TripRecommendation tripRecommendation = tripRecommendationRepository.findById(tripRecommendationId)
+    public void updateRecommendation(Long surveyId, RecommendDto recommendDto) {
+        Long recommendationId = surveyRepository.findById(surveyId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다."))
+                .getTripRecommendation().getId();
+
+        TripRecommendation tripRecommendation = tripRecommendationRepository.findById(recommendationId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 추천입니다."));
 
         recommendDto.getItinerary()
