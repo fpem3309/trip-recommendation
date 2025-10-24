@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Survey {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
