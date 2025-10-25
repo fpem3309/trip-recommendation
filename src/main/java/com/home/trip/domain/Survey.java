@@ -28,7 +28,7 @@ public class Survey {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "survey")
+    @OneToOne(mappedBy = "survey", cascade = CascadeType.ALL)
     private TripRecommendation tripRecommendation;
 
     private String guestToken;
@@ -58,6 +58,12 @@ public class Survey {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    // 연관관계 편의 메서드
+    public void setTripRecommendation(TripRecommendation tripRecommendation) {
+        this.tripRecommendation = tripRecommendation;
+        tripRecommendation.setSurvey(this); // 양방향 관계 세팅
+    }
 
     public static Survey createSurvey(SurveyDto dto) {
         return Survey.builder()

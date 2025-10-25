@@ -9,7 +9,6 @@ import com.home.trip.domain.dto.SurveyDto;
 import com.home.trip.domain.dto.openai.RecommendDto;
 import com.home.trip.domain.dto.openai.SurveyPromptDto;
 import com.home.trip.repository.SurveyRepository;
-import com.home.trip.repository.TripRecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class SurveyService {
 
     private final SurveyRepository surveyRepository;
-    private final TripRecommendationRepository tripRecommendationRepository;
     private final OpenAiService openAiService;
 
     public Long save(SurveyDto surveyDto) {
         Survey survey = Survey.createSurvey(surveyDto);
-        TripRecommendation tripRecommendation = TripRecommendation.createTripRecommendation(survey);
+        TripRecommendation tripRecommendation = TripRecommendation.createTripRecommendation(survey); // 상세 내용 제외 저장
+        survey.setTripRecommendation(tripRecommendation);
         surveyRepository.save(survey);
-        tripRecommendationRepository.save(tripRecommendation);
         return survey.getId();
     }
 
@@ -57,12 +55,9 @@ public class SurveyService {
     }
 
     public void updateRecommendation(Long surveyId, RecommendDto recommendDto) {
-        Long recommendationId = surveyRepository.findById(surveyId)
+        TripRecommendation tripRecommendation = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다."))
-                .getTripRecommendation().getId();
-
-        TripRecommendation tripRecommendation = tripRecommendationRepository.findById(recommendationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 추천입니다."));
+                .getTripRecommendation();
 
         recommendDto.getItinerary()
                 .forEach(dto -> tripRecommendation.addItinerary(Itinerary.createItinerary(dto)));
