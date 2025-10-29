@@ -32,14 +32,25 @@ class SurveyServiceTest {
         // given
         SurveyDto surveyDto = getSurveyDto();
 
-        Survey survey = Survey.createSurvey(surveyDto);
-
         // when
-        surveyRepository.save(survey);
-        Survey findSurvey = surveyRepository.findById(survey.getId()).get();
+        Long savedId = surveyService.save(surveyDto);
+        Survey findSurvey = surveyRepository.findById(savedId).get();
 
         // then
-        Assertions.assertThat(survey.getId()).isEqualTo(findSurvey.getId());
+        Assertions.assertThat(savedId).isEqualTo(findSurvey.getId());
+    }
+
+    @Test
+    void 설문_저장시_추천_저장() throws Exception {
+        // given
+        SurveyDto surveyDto = getSurveyDto();
+
+        // when
+        Long savedId = surveyService.save(surveyDto);
+        Survey findSurvey = surveyRepository.findById(savedId).get();
+
+        // then
+        Assertions.assertThat(findSurvey.getTripRecommendation()).isNotNull();
     }
 
     @Test
