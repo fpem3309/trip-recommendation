@@ -45,7 +45,7 @@ public class OpenAiService {
                                 "    {\"dayNumber\": 1, \"plan\": \"첫째 날 일정\"},\n" +
                                 "    {\"dayNumber\": 2, \"plan\": \"둘째 날 일정\"}\n" +
                                 "  ],\n" +
-                                "  \"estimatedBudget\": \"예상 경비(원)\",\n" +
+                                "  \"estimatedBudget\": \"예상 경비(원, 숫자로만 표시)\",\n" +
                                 "  \"bestSeason\": \"여행 추천 계절\"\n" +
                                 "}"),
                         new MessageDto("user", userPrompt)
