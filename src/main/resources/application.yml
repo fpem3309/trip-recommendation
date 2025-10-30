@@ -16,6 +16,10 @@ spring:
         dialect: ${SPRING_DATASOURCE_DIALECT}
 #    open-in-view: false
 
+  data:
+    mongodb:
+      uri: ${SPRING_MONGODB_URI}
+
 logging:
   level:
     org.hibernate.SQL: debug
