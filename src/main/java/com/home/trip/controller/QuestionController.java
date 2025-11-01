@@ -5,6 +5,7 @@ import com.home.trip.repository.QuestionRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +20,9 @@ public class QuestionController {
 
     private final QuestionRepository questionRepository;
 
-    @Operation(summary = "질문 가져오기", description = "질문 리스트를 리턴")
+    @Operation(summary = "질문 가져오기", description = "질문 리스트를 order 오름차순 리턴")
     @GetMapping
     public List<Question> getQuestions() {
-        return questionRepository.findAll();
+        return questionRepository.findAll(Sort.by(Sort.Direction.ASC, "order"));
     }
 }
