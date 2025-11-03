@@ -1,8 +1,10 @@
 package com.home.trip.service;
 
+import com.home.trip.domain.Prompt;
 import com.home.trip.domain.dto.openai.MessageDto;
 import com.home.trip.domain.dto.openai.RequestDto;
 import com.home.trip.domain.dto.openai.ResponseDto;
+import com.home.trip.repository.PromptRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OpenAiService {
     private final RestTemplate restTemplate = new RestTemplate();
+    private final PromptRepository promptRepository;
 
     @Value("${openai.api.key}")
     private String apiKey;
@@ -28,26 +31,14 @@ public class OpenAiService {
     private String model;
 
     public String getTravelRecommendation(String userPrompt) {
-        // 요청 메시지 세팅
-        // ❗️API 결제 후
+
+        Prompt prompt = promptRepository.findByRole("system").stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException("정의된 프롬프트가 없습니다."));
+
         RequestDto chatRequest = RequestDto.builder()
                 .model(model)
                 .messages(List.of(
-                        new MessageDto("system", "너는 여행 추천을 전문으로 하는 어시스턴트야. 항상 JSON 포맷으로 대답해." +
-                                " JSON 구조는 다음과 같이 고정한다, 다른 기호는 사용하지 마. :\n" +
-                                "{\n" +
-                                "  \"city\": \"도시명\",\n" +
-                                "  \"country\": \"국가명\",\n" +
-                                "  \"tripType\": \"여행유형(DOMESTIC/INTERNATIONAL)\",\n" +
-                                "  \"period\": \"여행기간(일수)\",\n" +
-                                "  \"recommendation\": \"추천 이유\",\n" +
-                                "  \"itinerary\": [\n" +
-                                "    {\"dayNumber\": 1, \"plan\": \"첫째 날 일정\"},\n" +
-                                "    {\"dayNumber\": 2, \"plan\": \"둘째 날 일정\"}\n" +
-                                "  ],\n" +
-                                "  \"estimatedBudget\": \"예상 경비(원, 숫자로만 표시)\",\n" +
-                                "  \"bestSeason\": \"여행 추천 계절\"\n" +
-                                "}"),
+                        new MessageDto(prompt.getRole(), prompt.getContent()),
                         new MessageDto("user", userPrompt)
                 ))
                 .temperature(0.7)
