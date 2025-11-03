@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class SurveyDto {
-    private Long userId;
+    private String userId;
     private String guestToken;
 
     private TripType tripType;
