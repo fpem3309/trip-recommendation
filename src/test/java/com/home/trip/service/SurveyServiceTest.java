@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -31,9 +32,11 @@ class SurveyServiceTest {
     void 설문_저장() throws Exception {
         // given
         SurveyDto surveyDto = getSurveyDto();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setHeader("X-Guest-Token", "test-guest-token");
 
         // when
-        Long savedId = surveyService.save(surveyDto);
+        Long savedId = surveyService.save(surveyDto, response);
         Survey findSurvey = surveyRepository.findById(savedId).get();
 
         // then
@@ -44,9 +47,11 @@ class SurveyServiceTest {
     void 설문_저장시_추천_저장() throws Exception {
         // given
         SurveyDto surveyDto = getSurveyDto();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setHeader("X-Guest-Token", "test-guest-token");
 
         // when
-        Long savedId = surveyService.save(surveyDto);
+        Long savedId = surveyService.save(surveyDto, response);
         Survey findSurvey = surveyRepository.findById(savedId).get();
 
         // then
