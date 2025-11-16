@@ -67,6 +67,7 @@ public class Survey {
 
     public static Survey createSurvey(SurveyDto dto) {
         return Survey.builder()
+                .user(dto.getUser())
                 .guestToken(dto.getGuestToken())
                 .tripType(dto.getTripType())
                 .period(dto.getPeriod())

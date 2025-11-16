@@ -1,5 +1,6 @@
 package com.home.trip.domain.dto;
 
+import com.home.trip.domain.User;
 import com.home.trip.domain.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class SurveyDto {
-    private String userId;
+    private User user;
     private String guestToken;
 
     private TripType tripType;

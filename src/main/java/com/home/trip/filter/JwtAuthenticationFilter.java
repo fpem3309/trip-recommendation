@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
 
             SecurityContextHolder.getContext().setAuthentication(auth);
-        } else {
+        } else { // guest token 생성
             String guestToken = jwtUtil.createGuestToken();
             response.setHeader("X-Guest-Token", guestToken);
         }

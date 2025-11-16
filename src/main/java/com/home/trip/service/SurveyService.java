@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.trip.domain.Itinerary;
 import com.home.trip.domain.Survey;
 import com.home.trip.domain.TripRecommendation;
+import com.home.trip.domain.User;
 import com.home.trip.domain.dto.SurveyDto;
 import com.home.trip.domain.dto.openai.RecommendDto;
 import com.home.trip.domain.dto.openai.SurveyPromptDto;
@@ -12,6 +13,7 @@ import com.home.trip.repository.SurveyRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +25,20 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
     private final OpenAiService openAiService;
+    private final UserService userService;
 
     public Long save(SurveyDto surveyDto, HttpServletResponse response) {
-        if (surveyDto.getUserId() == null) { // TODO: Security에서 유저 정보 가져오는 방식으로 변경 필요
-            String token = response.getHeader("X-Guest-Token");
-            surveyDto.setGuestToken(token);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("principal: {}", principal);
+
+        if (principal.equals("guest")) { // 게스트
+            String guestToken = response.getHeader("X-Guest-Token");
+            log.info("guestToken: {}", guestToken);
+            surveyDto.setGuestToken(guestToken);
+        }else { // 로그인 유저
+            String userId = (String) principal;
+            User findUser = userService.findByUserId(userId);
+            surveyDto.setUser(findUser);
         }
         Survey survey = Survey.createSurvey(surveyDto);
         TripRecommendation tripRecommendation = TripRecommendation.createTripRecommendation(survey); // 상세 내용 제외 저장
@@ -49,6 +60,7 @@ public class SurveyService {
 
             String travelRecommendation = openAiService.getTravelRecommendation(prompt)
                     .replaceAll("```", "")
+                    .replaceAll("json", "")
                     .replaceAll("\\)\\]\\)\\]\\)$", "")
                     .trim();
 
