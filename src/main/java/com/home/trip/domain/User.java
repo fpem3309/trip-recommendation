@@ -14,7 +14,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "Users")
 @EntityListeners(AuditingEntityListener.class)
@@ -35,8 +37,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Survey> surveyList = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(name = "role")
+    private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private Provider oauth_provider;
@@ -53,7 +58,7 @@ public class User {
                 .password(encodedPassword)
                 .email(userDto.getEmail())
                 .nickname(userDto.getNickname())
-                .role(userDto.getRole())
+                .roles(Set.of(userDto.getRole()))
                 .oauth_provider(userDto.getOauthProvider())
                 .createdAt(userDto.getCreatedAt())
                 .updatedAt(userDto.getUpdatedAt())
