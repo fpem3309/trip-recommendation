@@ -1,9 +1,9 @@
 package com.home.trip.service;
 
 import com.home.trip.domain.User;
-import com.home.trip.domain.enums.Role;
 import com.home.trip.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +23,10 @@ public class CustomUserDetailService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserId())
                 .password(user.getPassword()) // 암호화된 비밀번호
-                .roles(Role.USER.name())
+                .authorities(user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                        .toList()
+                ) // 권한 넣기
                 .build();
     }
 }
