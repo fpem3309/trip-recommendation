@@ -1,5 +1,6 @@
 package com.home.trip.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -27,9 +28,10 @@ public class JwtUtil {
         this.accessTokenExpTime = accessTokenExpTime;
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username) // 주체
+                .claim("role", role) // 역할
                 .setIssuedAt(new Date()) // 발급 시간
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpTime)) // 만료 시간
                 .signWith(secretKey) // 비밀키로 서명
@@ -50,13 +52,12 @@ public class JwtUtil {
         }
     }
 
-    public String getUsernameFromToken(String token) {
+    public Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 
     public String createGuestToken() {
@@ -65,6 +66,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject("guest")
+                .claim("role", "ROLE_ANONYMOUS")
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(secretKey)

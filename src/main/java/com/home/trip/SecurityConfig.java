@@ -32,7 +32,7 @@ public class SecurityConfig {
                                            AuthenticationManager authenticationManager) throws Exception {
 
         http
-                .cors(cors-> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable()) // REST API 서버니까 CSRF 끄기
                 .formLogin(form -> form.disable()) // 폼 로그인 끄기
                 .httpBasic(basic -> basic.disable()) // Basic 인증 끄기
@@ -40,8 +40,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/swagger-ui/**", // ui
                                 "/v3/api-docs/**", // api 문서
-                                "/api/survey/**", // 설문
+                                "/admin/**" // 관리자
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
                                 "/api/questions/**", // 질문
+                                "/api/survey/**", // 설문
                                 "/api/auth/**" // 회원 관련
                         ).permitAll()
                         .anyRequest().authenticated()

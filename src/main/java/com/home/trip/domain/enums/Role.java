@@ -1,5 +1,5 @@
 package com.home.trip.domain.enums;
 
 public enum Role {
-    ADMIN, USER, GUEST
+    ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS
 }

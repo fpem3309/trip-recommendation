@@ -13,7 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -46,7 +49,11 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
     // ✅ 로그인 성공 시 실행
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String token = jwtUtil.generateToken(authResult.getName());
+        String role = authResult.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        String token = jwtUtil.generateToken(authResult.getName(), role);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

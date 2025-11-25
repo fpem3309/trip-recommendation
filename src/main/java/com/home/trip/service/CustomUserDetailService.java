@@ -24,7 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
                 .username(user.getUserId())
                 .password(user.getPassword()) // 암호화된 비밀번호
                 .authorities(user.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
                         .toList()
                 ) // 권한 넣기
                 .build();
