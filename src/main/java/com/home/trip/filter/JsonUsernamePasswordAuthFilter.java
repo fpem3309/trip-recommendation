@@ -2,6 +2,7 @@ package com.home.trip.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.trip.domain.dto.UserLoginDto;
+import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,10 +23,12 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
-    public JsonUsernamePasswordAuthFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil1) {
+    public JsonUsernamePasswordAuthFilter(AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, JwtUtil jwtUtil1) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil1;
+        this.refreshTokenService = refreshTokenService;
         setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
     }
 
@@ -53,8 +56,15 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String token = jwtUtil.generateToken(authResult.getName(), role);
+        String token = jwtUtil.generateAccessToken(authResult.getName(), role);
+        String refreshToken = jwtUtil.generateRefreshToken(authResult.getName());
+        String username = authResult.getName();
 
+        // redis에 저장
+        refreshTokenService.saveRefreshToken(username, refreshToken);
+
+        response.addHeader("Set-Cookie",
+                "refresh=" + refreshToken + "; HttpOnly; Path=/; Max-Age=604800; SameSite=None; Secure");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("{\"token\":\"" + token + "\"}");

@@ -18,22 +18,33 @@ public class JwtUtil {
 
     private final Key secretKey;
     private final long accessTokenExpTime;
+    private final long refreshTokenExpTime;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.expiration_time}") long accessTokenExpTime
+            @Value("${jwt.access_expiration_time}") long accessTokenExpTime,
+            @Value("${jwt.refresh_expiration_time}") long refreshTokenExpTime
     ) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
         this.accessTokenExpTime = accessTokenExpTime;
+        this.refreshTokenExpTime = refreshTokenExpTime;
     }
 
-    public String generateToken(String username, String role) {
+    public String generateAccessToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username) // 주체
                 .claim("role", role) // 역할
                 .setIssuedAt(new Date()) // 발급 시간
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpTime)) // 만료 시간
+                .signWith(secretKey) // 비밀키로 서명
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username) // 주체
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpTime)) // 만료 시간
                 .signWith(secretKey) // 비밀키로 서명
                 .compact();
     }

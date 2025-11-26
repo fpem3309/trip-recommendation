@@ -19,6 +19,9 @@ spring:
   data:
     mongodb:
       uri: ${SPRING_MONGODB_URI}
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
 logging:
   level:
@@ -26,7 +29,8 @@ logging:
 #    org.hibernate.orm.jdbc.bind: trace
 
 jwt:
-  expiration_time: 3600000 # 1시간
+  access_expiration_time: 300_000 # 5분 1000 * 60 * 5
+  refresh_expiration_time: 604_800_000 # 일주일 1000 * 60 * 60 * 24 * 7
   secret: 7KeR7JeQ7ISc7ZWY64qUIOyKpO2UhOungeu2gO2KuOuekSBqcGHrnpEg7Iuc7YGQ66as7YuwIOyYiOygnA==
 
 openai:
