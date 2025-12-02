@@ -4,9 +4,9 @@ import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,24 +44,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } catch (ExpiredJwtException e) { // ⭐️만료된 액세스 토큰 재발급
-            String userId = e.getClaims().getSubject();
-            String refreshToken = resolveRefreshToken(request); // cookie에서 가져옴
-            String savedRefreshToken = refreshTokenService.getRefreshToken(userId); // redis에서 가져옴
-
-            log.info("===== Expired accessToken =====\nuserId: {}\nrefreshToken: {}\nsavedRefreshToken: {}\nequals: {}\nvalidate: {}\n",
-                    userId, refreshToken, savedRefreshToken, refreshToken.equals(savedRefreshToken), jwtUtil.validateToken(refreshToken));
-
-            if (refreshToken.equals(savedRefreshToken) && jwtUtil.validateToken(refreshToken)) {
-                String role = e.getClaims().get("role", String.class);
-                String newAccessToken = jwtUtil.generateAccessToken(userId, role);// 새 AccessToken 발급
-
-                log.info("===== newAccessToken=====\n: {}", newAccessToken);
-
-                response.setHeader("Authorization", "Bearer " + newAccessToken);
-                setAuthentication(userId, role);
-            } else {
-                log.warn("Invalid or expired refresh token for user: {}", userId);
-            }
+            sendUnauthorized(response, "ACCESS_TOKEN_EXPIRED");
+        } catch (JwtException | IllegalArgumentException ex) {
+            sendUnauthorized(response, "INVALID_ACCESS_TOKEN");
         } catch (Exception e) {
             log.error("Could not set user authentication in security context", e);
         }
@@ -71,10 +56,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * header에서 accessToken 가져오기
-     *
+     * 예외 발생시 메시지와 함께 JSON으로 응답(401)
+     * @param response
+     * @param message 예외 메시지(만료 또는 유효하지 않는 토큰)
+     * @throws IOException
+     */
+    private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"message\":\"" + message + "\"}");
+    }
+
+    /**
+     * header에서 Access Token 가져오기
      * @param request
-     * @return
+     * @return 토큰 있으면 토큰, 아니면 null
      */
     private String resolveToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
@@ -85,28 +81,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * cookie에서 refreshToken 가져오기
-     *
-     * @param request
-     * @return
-     */
-    private String resolveRefreshToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) return null;
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
-    /**
      * 권한 GrantedAuthority List로 리턴
-     *
-     * @param role
-     * @return
+     * @param userId 사용자 ID
+     * @param role 사용자 권한
      */
     private static void setAuthentication(String userId, String role) {
         List<SimpleGrantedAuthority> authorities = Stream.of(role.split(","))
