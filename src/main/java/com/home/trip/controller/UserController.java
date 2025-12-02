@@ -1,25 +1,44 @@
 package com.home.trip.controller;
 
+import com.home.trip.domain.dto.AccessTokenResponse;
 import com.home.trip.domain.dto.UserDto;
+import com.home.trip.service.RefreshTokenService;
 import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "회원", description = "회원 관련 API")
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "새로운 회원을 등록")
     public void joinUser(@RequestBody UserDto userDto) {
         userService.join(userDto);
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Access 토큰 재발급", description = "Refresh 토큰을 사용해 Access 토큰 재발급\n - 성공시 Access 토큰 리턴\n - 실패시 예외 발생")
+    public ResponseEntity<AccessTokenResponse> refreshAccessToken(@CookieValue(value = "refresh", required = false) String refreshToken) {
+        log.info("요청 refresh: {}", refreshToken);
+        String newAccessToken = refreshTokenService.refreshNewAccessToken(refreshToken);
+        return ResponseEntity.ok(new AccessTokenResponse(newAccessToken));
+    }
+
+    @DeleteMapping("/refresh")
+    @Operation(summary = "Refresh 토큰 삭제", description = "테스트를 위해 Refresh 토큰을 삭제")
+    public ResponseEntity<AccessTokenResponse> deleteRefreshToken(String userId) {
+        String refreshToken = refreshTokenService.getRefreshToken(userId);
+        refreshTokenService.deleteRefreshToken(userId);
+        return ResponseEntity.ok(new AccessTokenResponse(refreshToken));
     }
 }

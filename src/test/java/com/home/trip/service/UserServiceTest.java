@@ -27,7 +27,7 @@ class UserServiceTest {
         userDto.setPassword("123");
         userDto.setEmail("member1@member.com");
         userDto.setNickname("member");
-        userDto.setRole(Role.USER);
+        userDto.setRole(Role.ROLE_USER);
         userDto.setOauthProvider(null);
 
         // when

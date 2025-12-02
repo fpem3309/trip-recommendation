@@ -1,9 +1,12 @@
 package com.home.trip.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,7 @@ public class JwtUtil {
     private final Key secretKey;
     private final long accessTokenExpTime;
     private final long refreshTokenExpTime;
+    final static int ONE_HOUR = 1000 * 60 * 60; // 1시간
 
     public JwtUtil(
             @Value("${jwt.secret}") String secretKey,
@@ -49,15 +53,26 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token) {
-
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            log.error("JWT expired");
+            return false;
+        } catch (SignatureException e) {
+            log.error("Invalid JWT signature");
+            return false;
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token format");
+            return false;
         } catch (IllegalArgumentException e) {
-            log.error("Invalid JWT token", e);
+            log.error("Empty JWT token");
+            return false;
+        } catch (Exception e) {
+            log.error("Unknown JWT error", e);
             return false;
         }
     }
@@ -72,7 +87,7 @@ public class JwtUtil {
 
     public String createGuestToken() {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + 1000 * 60 * 60); // 1시간
+        Date expiry = new Date(now.getTime() + ONE_HOUR);
 
         return Jwts.builder()
                 .setSubject("guest")
