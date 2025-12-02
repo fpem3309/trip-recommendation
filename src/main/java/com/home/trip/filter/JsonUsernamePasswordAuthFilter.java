@@ -56,7 +56,7 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String token = jwtUtil.generateAccessToken(authResult.getName(), role);
+        String accessToken = jwtUtil.generateAccessToken(authResult.getName(), role);
         String refreshToken = jwtUtil.generateRefreshToken(authResult.getName());
         String username = authResult.getName();
 
@@ -67,7 +67,7 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
                 "refresh=" + refreshToken + "; HttpOnly; Path=/; Max-Age=604800; SameSite=None; Secure");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"token\":\"" + token + "\"}");
+        response.getWriter().write("{\"token\":\"" + accessToken + "\"}");
     }
 
     // ❎ 로그인 실패 시 실행

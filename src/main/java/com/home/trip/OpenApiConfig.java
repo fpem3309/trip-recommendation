@@ -36,8 +36,8 @@ public class OpenApiConfig {
             // 1. Request Body 정의
             Schema<?> loginSchema = new Schema<>()
                     .type("object")
-                    .addProperty("userId", new Schema<>().type("string").example("testuser"))
-                    .addProperty("password", new Schema<>().type("string").format("password").example("password"));
+                    .addProperty("userId", new Schema<>().type("string").example("test"))
+                    .addProperty("password", new Schema<>().type("string").format("password").example("test123"));
 
             RequestBody requestBody = new RequestBody()
                     .description("로그인 정보")
@@ -48,7 +48,7 @@ public class OpenApiConfig {
             // 2. Responses 정의
             ApiResponses apiResponses = new ApiResponses()
                     .addApiResponse("200", new ApiResponse()
-                            .description("로그인 성공 및 JWT 토큰 발급")
+                            .description("로그인 성공 및 JWT accessToken 리턴")
                             .content(new Content().addMediaType("application/json", new MediaType()
                                     .schema(new Schema<>().type("object")
                                             .addProperty("token", new Schema<>().type("string"))))))
@@ -57,7 +57,7 @@ public class OpenApiConfig {
             // 3. Operation 정의
             Operation operation = new Operation()
                     .summary("로그인")
-                    .description("아이디와 비밀번호로 로그인하고 JWT 토큰을 발급")
+                    .description("아이디와 비밀번호로 로그인하고 JWT accessToken과 refreshToken을 발급, refresh 토큰은 Redis에 저장")
                     .tags(Collections.singletonList("회원"))
                     .requestBody(requestBody)
                     .responses(apiResponses);

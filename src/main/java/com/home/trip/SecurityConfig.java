@@ -40,11 +40,11 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable()) // Basic 인증 끄기
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/swagger-ui/**", // ui
-                                "/v3/api-docs/**", // api 문서
                                 "/admin/**" // 관리자
                         ).hasRole("ADMIN")
                         .requestMatchers(
+                                "/swagger-ui/**", // ui
+                                "/v3/api-docs/**", // api 문서
                                 "/api/questions/**", // 질문
                                 "/api/survey/**", // 설문
                                 "/api/auth/**" // 회원 관련
