@@ -32,26 +32,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = resolveToken(request);
+        log.info("===== accessToken =====\n: {}", accessToken);
 
         try {
-            if (accessToken != null && jwtUtil.validateToken(accessToken)) { // accessToken 검증
-                log.info("===== Valid accessToken =====\n: {}", accessToken);
+            if (accessToken != null) {
+                // 1. accessToken 검증, 만료시 ExpiredJwtException 예외 발생
+                jwtUtil.validateToken(accessToken);
                 Claims claims = jwtUtil.getClaimsFromToken(accessToken);
+
+                // 2. 토큰 타입 체크
+                if (jwtUtil.isGuestToken(claims)) { // guest: 인증 생성하지 않고 다음 필터로
+                    log.info("Guest token detected - skip authentication");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
+                if (!jwtUtil.isAccessToken(claims)) { // access 타입이 아닌 경우: (refresh 토큰) 그냥 통과
+                    log.warn("Token is not an access token - skip auth");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
+                // 3. 정상적인 Access Token: Authentication 세팅(userId, role)
                 setAuthentication(claims.getSubject(), (String) claims.get("role"));
-            } else { // guest token 생성
-                String guestToken = jwtUtil.createGuestToken();
+            } else { // accessToken 없으면 guest token 생성
+                String guestToken = jwtUtil.generateGuestToken();
                 response.setHeader("X-Guest-Token", guestToken);
             }
 
-        } catch (ExpiredJwtException e) { // ⭐️만료된 액세스 토큰 재발급
+        } catch (ExpiredJwtException e) { // ⭐️액세스 토큰 만료 예외
+            log.info("ExpiredJwtException");
             sendUnauthorized(response, "ACCESS_TOKEN_EXPIRED");
-        } catch (JwtException | IllegalArgumentException ex) {
-            sendUnauthorized(response, "INVALID_ACCESS_TOKEN");
+            return;
         } catch (Exception e) {
             log.error("Could not set user authentication in security context", e);
+            sendUnauthorized(response, "INVALID_ACCESS_TOKEN");
+            return;
         }
 
-        // 토큰 자체가 없으면 게스트 토큰으로 다음 필터 진행 (비회원 접근 허용)
+        // 정상적인 경우: 다음 필터 진행
         filterChain.doFilter(request, response);
     }
 

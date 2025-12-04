@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "회원", description = "회원 관련 API")
@@ -40,5 +41,12 @@ public class UserController {
         String refreshToken = refreshTokenService.getRefreshToken(userId);
         refreshTokenService.deleteRefreshToken(userId);
         return ResponseEntity.ok(new AccessTokenResponse(refreshToken));
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "회원 조회", description = "로그인한 회원의 정보를 조회\n - 성공시 회원 정보\n - Access Token 없거나 만료시 401")
+    public void getUserInfo(Authentication auth) {
+        String userId = (String) auth.getPrincipal();
+        log.info("userId: {}", userId);
     }
 }

@@ -31,6 +31,7 @@ logging:
 jwt:
   access_expiration_time: 300_000 # 5분 1000 * 60 * 5
   refresh_expiration_time: 604_800_000 # 일주일 1000 * 60 * 60 * 24 * 7
+  guest_token_exp_time: 3600000 # 1시간 1000 * 60 * 60
   secret: 7KeR7JeQ7ISc7ZWY64qUIOyKpO2UhOungeu2gO2KuOuekSBqcGHrnpEg7Iuc7YGQ66as7YuwIOyYiOygnA==
 
 openai:

@@ -57,7 +57,7 @@ public class OpenApiConfig {
             // 3. Operation 정의
             Operation operation = new Operation()
                     .summary("로그인")
-                    .description("아이디와 비밀번호로 로그인하고 JWT accessToken과 refreshToken을 발급, refresh 토큰은 Redis에 저장")
+                    .description("아이디와 비밀번호로 로그인\n - JWT Access Token과 Refresh Token을 발급\n - refresh 토큰은 Redis에 저장")
                     .tags(Collections.singletonList("회원"))
                     .requestBody(requestBody)
                     .responses(apiResponses);
