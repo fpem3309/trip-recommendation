@@ -19,6 +19,7 @@ public class RefreshTokenService {
     private final StringRedisTemplate redis;
     private final JwtUtil jwtUtil;
     private static final long TIME_OUT = 7;
+    private final UserService userService;
 
     public void saveRefreshToken(String userId, String refreshToken) {
         log.info("Save redis key: {}, refreshToken: {}", userId, refreshToken);
@@ -55,7 +56,9 @@ public class RefreshTokenService {
         // 3. 토큰으로 사용자 ID(username)와 권한 가져오기
         Claims claims = jwtUtil.getClaimsFromToken(refreshToken);
         String username = claims.getSubject();
-        String role = claims.get("role", String.class);
+        String role = userService.findRoleByUserId(username);
+
+        log.info("role: {}", role);
 
         // 4. Redis에 저장된 토큰과 일치 여부 확인
         if (!isRefreshTokenValid(username, refreshToken)) {

@@ -2,17 +2,13 @@ package com.home.trip;
 
 import com.home.trip.filter.JsonUsernamePasswordAuthFilter;
 import com.home.trip.filter.JwtAuthenticationFilter;
-import com.home.trip.service.CustomUserDetailService;
 import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,7 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailService userDetailsService;
     private final RefreshTokenService refreshTokenService;
     private final JwtUtil jwtUtil;
 
@@ -42,8 +37,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/admin/**" // 관리자
                         ).hasRole("ADMIN")
-                        .requestMatchers("/api/auth/me/**")
-                        .authenticated()
+                        .requestMatchers("/api/auth/me/**"
+                        ).authenticated()
                         .requestMatchers(
                                 "/swagger-ui/**", // ui
                                 "/v3/api-docs/**", // api 문서
@@ -63,22 +58,6 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    // AuthenticationManager Bean으로 등록
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-
-        authBuilder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-
-        return authBuilder.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     // CORS 설정
