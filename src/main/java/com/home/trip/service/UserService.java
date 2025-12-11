@@ -4,6 +4,7 @@ import com.home.trip.domain.User;
 import com.home.trip.domain.dto.UserDto;
 import com.home.trip.domain.enums.Role;
 import com.home.trip.repository.UserRepository;
+import com.home.trip.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserUtil userUtil;
 
     public void join(UserDto userDto) {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
@@ -32,8 +34,6 @@ public class UserService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
-        return user.getRoles().stream()
-                .map(Role::name)
-                .toList().toString();
+        return userUtil.userRoleToStringWithComma(user.getRoles(), Role::name);
     }
 }

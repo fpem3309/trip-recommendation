@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.trip.domain.dto.UserLoginDto;
 import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
+import com.home.trip.util.UserUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +24,13 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtUtil jwtUtil;
+    private final UserUtil userUtil;
     private final RefreshTokenService refreshTokenService;
 
-    public JsonUsernamePasswordAuthFilter(AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, JwtUtil jwtUtil1) {
+    public JsonUsernamePasswordAuthFilter(AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, JwtUtil jwtUtil, UserUtil userUtil) {
         this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil1;
+        this.jwtUtil = jwtUtil;
+        this.userUtil = userUtil;
         this.refreshTokenService = refreshTokenService;
         setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
     }
@@ -52,10 +55,8 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
     // ✅ 로그인 성공 시 실행
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String role = authResult.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
 
+        String role = userUtil.userRoleToStringWithComma(authResult.getAuthorities(), GrantedAuthority::getAuthority);
         String accessToken = jwtUtil.generateAccessToken(authResult.getName(), role);
         String refreshToken = jwtUtil.generateRefreshToken(authResult.getName());
         String username = authResult.getName();

@@ -4,6 +4,7 @@ import com.home.trip.filter.JsonUsernamePasswordAuthFilter;
 import com.home.trip.filter.JwtAuthenticationFilter;
 import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
+import com.home.trip.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 
     private final RefreshTokenService refreshTokenService;
     private final JwtUtil jwtUtil;
+    private final UserUtil userUtil;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
@@ -50,7 +52,7 @@ public class SecurityConfig {
 
                 )
                 // ⭐ 로그인용 커스텀 필터 등록 (UsernamePasswordAuthenticationFilter 대체)
-                .addFilterBefore(new JsonUsernamePasswordAuthFilter(authenticationManager, refreshTokenService, jwtUtil),
+                .addFilterBefore(new JsonUsernamePasswordAuthFilter(authenticationManager, refreshTokenService, jwtUtil, userUtil),
                         UsernamePasswordAuthenticationFilter.class)
 
                 // ⭐ JWT 검증 필터 등록
