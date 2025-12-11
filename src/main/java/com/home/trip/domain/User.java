@@ -58,7 +58,7 @@ public class User {
                 .password(encodedPassword)
                 .email(userDto.getEmail())
                 .nickname(userDto.getNickname())
-                .roles(Set.of(userDto.getRole()))
+                .roles(userDto.getRole())
                 .oauth_provider(userDto.getOauthProvider())
                 .createdAt(userDto.getCreatedAt())
                 .updatedAt(userDto.getUpdatedAt())

@@ -44,9 +44,9 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "회원 조회", description = "로그인한 회원의 정보를 조회\n - 성공시 회원 정보\n - Access Token 없거나 만료시 401")
-    public void getUserInfo(Authentication auth) {
+    @Operation(summary = "회원 조회", description = "로그인한 회원의 아이디 정보를 조회\n - 성공시 회원 정보\n - Access Token 없거나 만료시 401")
+    public ResponseEntity<String> getUserInfo(Authentication auth) {
         String userId = (String) auth.getPrincipal();
-        log.info("userId: {}", userId);
+        return ResponseEntity.ok(userId);
     }
 }
