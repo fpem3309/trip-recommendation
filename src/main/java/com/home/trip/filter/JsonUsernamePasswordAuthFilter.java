@@ -13,12 +13,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -57,9 +55,9 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
         String role = userUtil.userRoleToStringWithComma(authResult.getAuthorities(), GrantedAuthority::getAuthority);
-        String accessToken = jwtUtil.generateAccessToken(authResult.getName(), role);
-        String refreshToken = jwtUtil.generateRefreshToken(authResult.getName());
         String username = authResult.getName();
+        String accessToken = jwtUtil.generateAccessToken(username, role);
+        String refreshToken = jwtUtil.generateRefreshToken(username);
 
         // redis에 저장
         refreshTokenService.saveRefreshToken(username, refreshToken);
