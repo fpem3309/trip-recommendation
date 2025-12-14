@@ -1,14 +1,14 @@
 package com.home.trip.controller;
 
 import com.home.trip.domain.Question;
+import com.home.trip.domain.dto.QuestionDto;
 import com.home.trip.repository.QuestionRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +24,13 @@ public class QuestionController {
     @GetMapping
     public List<Question> getQuestions() {
         return questionRepository.findAll(Sort.by(Sort.Direction.ASC, "order"));
+    }
+
+    @Operation(summary = "질문 추가", description = "질문 리스트에 질문 추가하기")
+    @PostMapping
+    public ResponseEntity<String> addQuestion(@RequestBody QuestionDto questionDto) {
+        Question question = Question.createQuestion(questionDto);
+        questionRepository.insert(question);
+        return ResponseEntity.ok("insert");
     }
 }
