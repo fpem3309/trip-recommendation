@@ -9,4 +9,5 @@ import java.util.List;
 public class QuestionDto {
     private String question;
     private List<Question.Option> options;
+    private Long order;
 }

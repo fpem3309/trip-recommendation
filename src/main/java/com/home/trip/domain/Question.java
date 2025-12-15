@@ -20,6 +20,7 @@ public class Question {
     private String id;
     private String question;
     private List<Option> options;
+    private Long order;
 
     @Getter
     @NoArgsConstructor
@@ -32,6 +33,7 @@ public class Question {
         return Question.builder()
                 .question(dto.getQuestion())
                 .options(dto.getOptions())
+                .order(dto.getOrder())
                 .build();
     }
 }

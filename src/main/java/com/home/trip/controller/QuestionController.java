@@ -29,6 +29,8 @@ public class QuestionController {
     @Operation(summary = "질문 추가", description = "질문 리스트에 질문 추가하기")
     @PostMapping
     public ResponseEntity<String> addQuestion(@RequestBody QuestionDto questionDto) {
+        Long count = questionRepository.count();
+        questionDto.setOrder(count);
         Question question = Question.createQuestion(questionDto);
         questionRepository.insert(question);
         return ResponseEntity.ok("insert");
