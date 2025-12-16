@@ -42,6 +42,7 @@ public class Question {
                 .id(id)
                 .question(dto.getQuestion())
                 .options(dto.getOptions())
+                .order(dto.getOrder())
                 .build();
     }
 }

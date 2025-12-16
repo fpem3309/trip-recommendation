@@ -46,7 +46,7 @@ public class QuestionController {
         return ResponseEntity.ok("deleted " + id);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> patchQuestion(@PathVariable String id, @RequestBody QuestionDto questionDto) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 질문이 없습니다."));
