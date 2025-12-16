@@ -35,4 +35,23 @@ public class QuestionController {
         questionRepository.insert(question);
         return ResponseEntity.ok("insert");
     }
+
+    @Operation(summary = "질문 삭제", description = "해당 id(_id) 질문 1개 삭제")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteQuestion(@PathVariable String id) {
+        if (!questionRepository.existsById(id)) {
+            throw new IllegalArgumentException("해당 질문이 없습니다.");
+        }
+        questionRepository.deleteById(id);
+        return ResponseEntity.ok("deleted " + id);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> patchQuestion(@PathVariable String id, @RequestBody QuestionDto questionDto) {
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 질문이 없습니다."));
+        Question changeQuestion = question.changeQuestionOrOption(id, questionDto);
+        questionRepository.save(changeQuestion);
+        return ResponseEntity.ok("changed " + changeQuestion.getId());
+    }
 }

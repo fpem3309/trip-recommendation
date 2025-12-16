@@ -36,4 +36,12 @@ public class Question {
                 .order(dto.getOrder())
                 .build();
     }
+
+    public Question changeQuestionOrOption(String id, QuestionDto dto) {
+        return Question.builder()
+                .id(id)
+                .question(dto.getQuestion())
+                .options(dto.getOptions())
+                .build();
+    }
 }
