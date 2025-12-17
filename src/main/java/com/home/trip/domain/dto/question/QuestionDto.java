@@ -1,4 +1,4 @@
-package com.home.trip.domain.dto;
+package com.home.trip.domain.dto.question;
 
 import com.home.trip.domain.Question;
 import lombok.Data;

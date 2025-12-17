@@ -1,6 +1,6 @@
 package com.home.trip.domain;
 
-import com.home.trip.domain.dto.QuestionDto;
+import com.home.trip.domain.dto.question.QuestionDto;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,5 +44,9 @@ public class Question {
                 .options(dto.getOptions())
                 .order(dto.getOrder())
                 .build();
+    }
+
+    public void changeOrder(Long newOrder) {
+        this.order = newOrder;
     }
 }
