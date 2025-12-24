@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
@@ -32,6 +34,7 @@ public class QuestionService {
      * questions 컬렉션에서 count()로 index를 추출해 insert()
      * @param questionDto 클라이언트에서 폼으로 요청
      */
+    @Transactional
     public void insertQuestion(QuestionDto questionDto) {
         Long count = questionRepository.count();
         questionDto.setOrder(count);
@@ -44,6 +47,7 @@ public class QuestionService {
      * @param questionId 삭제할 id(question의 _id)
      * @throws IllegalArgumentException 해당 id(question의 _id)가 없을 때
      */
+    @Transactional
     public void deleteQuestion(String questionId) {
         if (!questionRepository.existsById(questionId)) {
             throw new IllegalArgumentException("해당 질문이 없습니다.");
@@ -57,6 +61,7 @@ public class QuestionService {
      * @param questionDto 클라이언트에서 폼으로 요청
      * @throws IllegalArgumentException 해당 id(question의 _id)가 없을 때
      */
+    @Transactional
     public void updateQuestion(String questionId, QuestionDto questionDto) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 질문이 없습니다."));
@@ -69,6 +74,7 @@ public class QuestionService {
      * @param request questions 컬렉션의 모든 질문들 리스트
      * TODO: 성능 개선 필요
      */
+    @Transactional
     public void updateQuestionOrder(QuestionOrderUpdateDto request) {
         // 1. id 목록 추출
         List<String> ids = request.getQuestions().stream()

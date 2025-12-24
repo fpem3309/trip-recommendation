@@ -1,29 +1,24 @@
 package com.home.trip.controller;
 
 import com.home.trip.domain.Question;
-import com.home.trip.domain.User;
 import com.home.trip.domain.dto.UserDto;
 import com.home.trip.domain.dto.question.QuestionDto;
-import com.home.trip.domain.dto.question.QuestionOrderDto;
 import com.home.trip.domain.dto.question.QuestionOrderUpdateDto;
-import com.home.trip.repository.QuestionRepository;
 import com.home.trip.repository.UserRepository;
 import com.home.trip.service.QuestionService;
+import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Tag(name = "관리자", description = "관리자 권한 필요")
@@ -33,8 +28,7 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final QuestionService questionService;
-    private final QuestionRepository questionRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Operation(summary = "메인 페이지", description = "관리자 메인 페이지")
     @GetMapping
@@ -82,10 +76,7 @@ public class AdminController {
     @Operation(summary = "회원 관리 페이지", description = "회원 리스트 및 페이징")
     @GetMapping("/users")
     public ResponseEntity<Page<UserDto>> getUsers(Pageable pageable) {
-        Page<User> page = userRepository.findAll(pageable);
-        Page<UserDto> userList = page.map(user -> new UserDto(user.getUserId(),
-                user.getPassword(), user.getEmail(), user.getNickname(), user.getRoles(),
-                user.getOauth_provider(), user.getCreatedAt(), user.getUpdatedAt()));
+        Page<UserDto> userList = userService.findAllUsers(pageable);
         return ResponseEntity.ok(userList);
     }
 }
