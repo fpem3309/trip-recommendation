@@ -1,10 +1,10 @@
 package com.home.trip.controller;
 
 import com.home.trip.domain.Question;
-import com.home.trip.domain.dto.UserDto;
+import com.home.trip.domain.dto.user.UserDto;
 import com.home.trip.domain.dto.question.QuestionDto;
 import com.home.trip.domain.dto.question.QuestionOrderUpdateDto;
-import com.home.trip.repository.UserRepository;
+import com.home.trip.domain.dto.user.UserUpdateDto;
 import com.home.trip.service.QuestionService;
 import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,5 +78,12 @@ public class AdminController {
     public ResponseEntity<Page<UserDto>> getUsers(Pageable pageable) {
         Page<UserDto> userList = userService.findAllUsers(pageable);
         return ResponseEntity.ok(userList);
+    }
+
+    @Operation(summary = "회원 수정", description = "해당 userId로 회원 정보를 수정")
+    @PutMapping("/users")
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        userService.updateUser(userUpdateDto);
+        return ResponseEntity.ok("updated " + userUpdateDto.getUserId());
     }
 }

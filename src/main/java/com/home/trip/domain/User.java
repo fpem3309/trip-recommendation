@@ -1,13 +1,11 @@
 package com.home.trip.domain;
 
-import com.home.trip.domain.dto.UserDto;
+import com.home.trip.domain.dto.user.UserDto;
+import com.home.trip.domain.dto.user.UserUpdateDto;
 import com.home.trip.domain.enums.Provider;
 import com.home.trip.domain.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -64,5 +62,11 @@ public class User {
                 .createdAt(userDto.getCreatedAt())
                 .updatedAt(userDto.getUpdatedAt())
                 .build();
+    }
+
+    public void changeUserInfo(UserUpdateDto dto) {
+        if (!dto.getEmail().isBlank()) this.email = dto.getEmail();
+        if (!dto.getNickname().isBlank()) this.nickname = dto.getNickname();
+        if (!dto.getRole().isEmpty()) this.roles = dto.getRole();
     }
 }

@@ -1,4 +1,4 @@
-package com.home.trip.domain.dto;
+package com.home.trip.domain.dto.user;
 
 import lombok.Data;
 

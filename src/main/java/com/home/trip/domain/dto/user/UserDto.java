@@ -1,4 +1,4 @@
-package com.home.trip.domain.dto;
+package com.home.trip.domain.dto.user;
 
 import com.home.trip.domain.enums.Provider;
 import com.home.trip.domain.enums.Role;

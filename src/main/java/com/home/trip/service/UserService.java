@@ -1,18 +1,23 @@
 package com.home.trip.service;
 
 import com.home.trip.domain.User;
-import com.home.trip.domain.dto.UserDto;
+import com.home.trip.domain.dto.user.UserDto;
+import com.home.trip.domain.dto.user.UserUpdateDto;
 import com.home.trip.domain.enums.Role;
 import com.home.trip.exception.DuplicateUserIdException;
 import com.home.trip.repository.UserRepository;
 import com.home.trip.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
 
@@ -41,4 +46,23 @@ public class UserService {
 
         return userUtil.userRoleToStringWithComma(user.getRoles(), Role::name);
     }
+
+    public Page<UserDto> findAllUsers(Pageable pageable) {
+        Page<User> page = userRepository.findAll(pageable);
+        return page.map(user -> new UserDto(user.getUserId(),
+                user.getPassword(), user.getEmail(), user.getNickname(), user.getRoles(),
+                user.getOauth_provider(), user.getCreatedAt(), user.getUpdatedAt()));
+    }
+
+    /**
+     * 회원 정보 업데이트
+     * @param userUpdateDto 클라이언트에서 폼으로 요청(userId, email, nickname, role)
+     * @throws IllegalArgumentException 일치하는 userId가 없을 때
+     */
+    @Transactional
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        User user = findByUserId(userUpdateDto.getUserId());
+        user.changeUserInfo(userUpdateDto);
+    }
+
 }

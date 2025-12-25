@@ -1,7 +1,7 @@
 package com.home.trip.service;
 
 import com.home.trip.domain.User;
-import com.home.trip.domain.dto.UserDto;
+import com.home.trip.domain.dto.user.UserDto;
 import com.home.trip.domain.enums.Role;
 import com.home.trip.exception.DuplicateUserIdException;
 import jakarta.persistence.EntityManager;

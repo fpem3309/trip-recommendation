@@ -1,7 +1,7 @@
 package com.home.trip.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.home.trip.domain.dto.UserLoginDto;
+import com.home.trip.domain.dto.user.UserLoginDto;
 import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
 import com.home.trip.util.UserUtil;

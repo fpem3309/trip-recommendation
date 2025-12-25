@@ -1,7 +1,7 @@
 package com.home.trip.controller;
 
 import com.home.trip.domain.dto.AccessTokenResponse;
-import com.home.trip.domain.dto.UserDto;
+import com.home.trip.domain.dto.user.UserDto;
 import com.home.trip.service.RefreshTokenService;
 import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
