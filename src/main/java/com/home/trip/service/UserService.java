@@ -56,6 +56,7 @@ public class UserService {
 
     /**
      * 회원 정보 업데이트
+     *
      * @param userUpdateDto 클라이언트에서 폼으로 요청(userId, email, nickname, role)
      * @throws IllegalArgumentException 일치하는 userId가 없을 때
      */
@@ -65,4 +66,19 @@ public class UserService {
         user.changeUserInfo(userUpdateDto);
     }
 
+    /**
+     * 회원 삭제(상태값, 삭제 날짜 업데이트)
+     *
+     * @param userId 회원 아이디
+     * @throws IllegalArgumentException 일치하는 userId가 없을 때
+     * @throws IllegalStateException 이미 탈퇴 처리된 회원일 때
+     */
+    @Transactional
+    public void deleteUser(String userId) {
+        User user = findByUserId(userId);
+        if (user.isWithdrawn()) {
+            throw new IllegalStateException("이미 탈퇴 처리된 회원입니다.");
+        }
+        user.withdraw();
+    }
 }

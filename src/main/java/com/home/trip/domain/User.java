@@ -1,11 +1,15 @@
 package com.home.trip.domain;
 
 import com.home.trip.domain.dto.user.UserDto;
+import com.home.trip.domain.dto.user.UserStatus;
 import com.home.trip.domain.dto.user.UserUpdateDto;
 import com.home.trip.domain.enums.Provider;
 import com.home.trip.domain.enums.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -51,6 +55,11 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    private LocalDateTime withdrawnAt;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     public static User createUser(UserDto userDto, String encodedPassword) {
         return User.builder()
                 .userId(userDto.getUserId())
@@ -61,6 +70,7 @@ public class User {
                 .oauth_provider(userDto.getOauthProvider())
                 .createdAt(userDto.getCreatedAt())
                 .updatedAt(userDto.getUpdatedAt())
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 
@@ -68,5 +78,14 @@ public class User {
         if (!dto.getEmail().isBlank()) this.email = dto.getEmail();
         if (!dto.getNickname().isBlank()) this.nickname = dto.getNickname();
         if (!dto.getRole().isEmpty()) this.roles = dto.getRole();
+    }
+
+    public void withdraw() {
+        this.status = UserStatus.WITHDRAWN;
+        this.withdrawnAt = LocalDateTime.now();
+    }
+
+    public boolean isWithdrawn() {
+        return this.status == UserStatus.WITHDRAWN;
     }
 }

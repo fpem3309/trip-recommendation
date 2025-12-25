@@ -86,4 +86,11 @@ public class AdminController {
         userService.updateUser(userUpdateDto);
         return ResponseEntity.ok("updated " + userUpdateDto.getUserId());
     }
+
+    @Operation(summary = "회원 삭제", description = "해당 userId로 회원 삭제")
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("deleted " + userId);
+    }
 }
