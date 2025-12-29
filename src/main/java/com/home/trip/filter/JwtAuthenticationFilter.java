@@ -1,10 +1,8 @@
 package com.home.trip.filter;
 
-import com.home.trip.service.RefreshTokenService;
 import com.home.trip.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +25,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // ⭐️OncePerRequestFilter: Http Request의 요청에 대해 한번만 실행
 
     private final JwtUtil jwtUtil;
-    private final RefreshTokenService refreshTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -100,7 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 권한 GrantedAuthority List로 리턴
+     * SecurityContextHolder에 사용자 인증 정보 등록
      * @param userId 사용자 ID
      * @param role 사용자 권한
      */

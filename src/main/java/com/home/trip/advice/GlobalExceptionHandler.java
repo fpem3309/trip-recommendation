@@ -30,14 +30,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
         log.warn("Handling IllegalStateException: {}", ex.getMessage());
-        ErrorResponse response = new ErrorResponse("ALREADY_WITHDRAWN", ex.getMessage());
+        ErrorResponse response = new ErrorResponse("INVALID_STATE", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         log.warn("Handling IllegalArgumentException: {}", ex.getMessage());
-        ErrorResponse response = new ErrorResponse("ALREADY_WITHDRAWN", ex.getMessage());
+        ErrorResponse response = new ErrorResponse("INVALID_INPUT_VALUE", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

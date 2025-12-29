@@ -56,7 +56,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class)
 
                 // ⭐ JWT 검증 필터 등록
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, refreshTokenService),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

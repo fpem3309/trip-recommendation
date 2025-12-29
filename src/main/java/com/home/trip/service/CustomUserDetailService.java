@@ -1,24 +1,30 @@
 package com.home.trip.service;
 
 import com.home.trip.domain.User;
-import com.home.trip.repository.UserRepository;
+import com.home.trip.domain.dto.user.UserStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        User user = userService.findByUserId(userId);
+
+        if (user.getStatus().equals(UserStatus.WITHDRAWN)) {
+            throw new DisabledException("탈퇴 처리된 회원입니다.");
+        }
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserId())
