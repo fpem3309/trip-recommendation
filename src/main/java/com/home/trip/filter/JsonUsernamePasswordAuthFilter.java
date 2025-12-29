@@ -70,11 +70,11 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
     }
 
     // ❎ 로그인 실패 시 실행
-
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write("{\"error\":\"Invalid username or password\"}");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"message\":\"아이디 혹은 비밀번호가 잘못되었습니다.\"}");
     }
 }

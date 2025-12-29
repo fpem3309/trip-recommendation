@@ -17,13 +17,34 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleRefreshTokenNotFound(RefreshTokenNotFoundException ex) {
         log.warn("Handling RefreshTokenNotFoundException: {}", ex.getMessage());
         ErrorResponse response = new ErrorResponse("NO_REFRESH_TOKEN", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(InvalidRefreshTokenException.class)
     public ResponseEntity<ErrorResponse> handleInvalidRefreshToken(InvalidRefreshTokenException ex) {
         log.warn("Handling InvalidRefreshTokenException: {}", ex.getMessage());
         ErrorResponse response = new ErrorResponse("INVALID_REFRESH_TOKEN", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
+        log.warn("Handling IllegalStateException: {}", ex.getMessage());
+        ErrorResponse response = new ErrorResponse("ALREADY_WITHDRAWN", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+        log.warn("Handling IllegalArgumentException: {}", ex.getMessage());
+        ErrorResponse response = new ErrorResponse("ALREADY_WITHDRAWN", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        log.warn("Handling Exception: {}", ex.getMessage());
+        ErrorResponse response = new ErrorResponse("SERVER_ERROR", "서버 내부 에러가 발생했습니다.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

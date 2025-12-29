@@ -178,7 +178,7 @@ class UserServiceTest {
     }
 
     @Test
-    void 이미_탈되된_회원_예외발생() throws Exception {
+    void 이미_탈퇴된_회원_예외발생() throws Exception {
         // given
         String userId = "test";
 
