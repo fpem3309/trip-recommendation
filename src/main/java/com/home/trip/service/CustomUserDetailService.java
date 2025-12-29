@@ -22,7 +22,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         User user = userService.findByUserId(userId);
 
-        if (user.getStatus().equals(UserStatus.WITHDRAWN)) {
+        if (user.isWithdrawn()) {
             throw new DisabledException("탈퇴 처리된 회원입니다.");
         }
 
