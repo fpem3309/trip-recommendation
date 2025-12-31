@@ -1,4 +1,4 @@
-package com.home.trip;
+package com.home.trip.config;
 
 import com.home.trip.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;

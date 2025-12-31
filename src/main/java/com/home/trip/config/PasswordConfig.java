@@ -1,4 +1,4 @@
-package com.home.trip;
+package com.home.trip.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

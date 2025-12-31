@@ -1,4 +1,4 @@
-package com.home.trip;
+package com.home.trip.config;
 
 import com.home.trip.filter.JsonUsernamePasswordAuthFilter;
 import com.home.trip.filter.JwtAuthenticationFilter;
