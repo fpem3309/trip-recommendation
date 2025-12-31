@@ -6,15 +6,17 @@ spring:
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
 
   jpa:
+    show-sql: false
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true
+        format_sql: true # 쿼리를 한 줄이 아닌 예쁘게 줄바꿈해서 출력
+        highlight_sql: true # 터미널에서 가독성을 위해 추천
+        use_sql_comments: true # 어떤 메서드 때문에 발생한 쿼리인지 주석 추가
         default_batch_fetch_size: 100
         dialect: ${SPRING_DATASOURCE_DIALECT}
-#    open-in-view: false
+  #    open-in-view: false
 
   data:
     mongodb:
@@ -27,7 +29,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.springframework.data.mongodb.core.MongoTemplate: debug
-#    org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.orm.jdbc.bind: trace
 
 jwt:
   access_expiration_time: 300_000 # 5분 1000 * 60 * 5
