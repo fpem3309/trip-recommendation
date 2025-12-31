@@ -1,40 +1,24 @@
 package com.home.trip.domain.dto.openai;
 
 import com.home.trip.domain.Survey;
-import com.home.trip.domain.enums.*;
+import com.home.trip.domain.SurveyAnswer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 public class SurveyPromptDto {
-    private TripType tripType;
-    private String period;
-    private String peopleCount;
-    private String budget;
-
-    private PreferenceType preferenceType;
-    private Transportation transportation;
-    private TripStyle tripStyle;
-    private int foodImportance;
-
-    private Accommodation accommodation;
-    private Companion companion;
+    private List<String> answers;
 
     public static SurveyPromptDto createSurveyPromptDto(Survey survey) {
         return SurveyPromptDto.builder()
-                .tripType(survey.getTripType())
-                .period(survey.getPeriod())
-                .peopleCount(survey.getPeopleCount())
-                .budget(survey.getBudget())
-                .preferenceType(survey.getPreferenceType())
-                .transportation(survey.getTransportation())
-                .tripStyle(survey.getTripStyle())
-                .foodImportance(survey.getFoodImportance())
-                .accommodation(survey.getAccommodation())
-                .companion(survey.getCompanion())
+                .answers(survey.getSurveyAnswers().stream()
+                        .map(SurveyAnswer::getAnswer)
+                        .toList())
                 .build();
     }
 }

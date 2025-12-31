@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,6 +41,19 @@ public class TripRecommendation {
     @Enumerated(EnumType.STRING)
     private RecommendationStatus status;
 
+    /**
+     * setter 대신 관계 주인이 set
+     * @param survey 설문
+     */
+    protected void confirmSurvey(Survey survey) {
+        this.survey = survey;
+    }
+
+    /**
+     * Survey로 TripRecommendation Entity 생성(추천 상세 내용 제외)
+     * @param survey 설문 정보
+     * @return 설문 정보, 상태(PENDING)만 포함된 TripRecommendation
+     */
     public static TripRecommendation createTripRecommendation(Survey survey) {
         return TripRecommendation.builder()
                 .survey(survey)
@@ -50,9 +62,13 @@ public class TripRecommendation {
                 .build();
     }
 
+    /**
+     * 답변 편의 메서드(주인이 아닌쪽)
+     * @param item 추천 일자별 여행 일정
+     */
     public void addItinerary(Itinerary item) {
         itinerary.add(item);
-        item.setTripRecommendation(this);
+        item.confirmTripRecommendation(this);
     }
 
     public void setRecommendationTrip(RecommendDto recommendDto) {

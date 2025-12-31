@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class QuestionDto {
     private String question;
+    private Long questionId;
     private List<Question.Option> options;
     private Long order;
 }

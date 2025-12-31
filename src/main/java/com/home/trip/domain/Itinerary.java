@@ -5,10 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +27,14 @@ public class Itinerary {
                 .dayNumber(itineraryDto.getDayNumber())
                 .plan(itineraryDto.getPlan())
                 .build();
+    }
+
+    /**
+     * setter 대신 관계 주인이 set
+     * @param tripRecommendation 여행 추천
+     */
+    public void confirmTripRecommendation(TripRecommendation tripRecommendation) {
+        this.tripRecommendation = tripRecommendation;
     }
 }
 

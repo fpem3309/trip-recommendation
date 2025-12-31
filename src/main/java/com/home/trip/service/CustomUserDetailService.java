@@ -1,7 +1,6 @@
 package com.home.trip.service;
 
 import com.home.trip.domain.User;
-import com.home.trip.domain.dto.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.DisabledException;

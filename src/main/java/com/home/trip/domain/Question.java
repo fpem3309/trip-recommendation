@@ -18,6 +18,7 @@ import java.util.List;
 public class Question {
     @Id
     private String id;
+    private Long questionId;
     private String question;
     private List<Option> options;
     private Long order;
@@ -31,6 +32,7 @@ public class Question {
 
     public static Question createQuestion(QuestionDto dto) {
         return Question.builder()
+                .questionId(dto.getQuestionId())
                 .question(dto.getQuestion())
                 .options(dto.getOptions())
                 .order(dto.getOrder())

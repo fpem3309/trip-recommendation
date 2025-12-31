@@ -38,6 +38,7 @@ public class QuestionService {
     public void insertQuestion(QuestionDto questionDto) {
         Long count = questionRepository.count();
         questionDto.setOrder(count);
+        questionDto.setQuestionId(count);
         Question question = Question.createQuestion(questionDto);
         questionRepository.insert(question);
     }
