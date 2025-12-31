@@ -78,18 +78,18 @@ public class QuestionService {
     @Transactional
     public void updateQuestionOrder(QuestionOrderUpdateDto request) {
         // 1. id 목록 추출
-        List<String> ids = request.getQuestions().stream()
-                .map(QuestionOrderDto::getId)
+        List<String> ids = request.questions().stream()
+                .map(QuestionOrderDto::id)
                 .toList();
 
         // 2. 기존 질문 조회
         List<Question> questions = questionRepository.findAllById(ids);
 
         // 3. id → order 매핑
-        Map<String, Long> orderMap = request.getQuestions().stream()
+        Map<String, Long> orderMap = request.questions().stream()
                 .collect(Collectors.toMap(
-                        QuestionOrderDto::getId,
-                        QuestionOrderDto::getOrder
+                        QuestionOrderDto::id,
+                        QuestionOrderDto::order
                 ));
 
         // 4. order만 수정

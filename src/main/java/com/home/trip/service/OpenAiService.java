@@ -60,8 +60,8 @@ public class OpenAiService {
 
         log.info("openAI API response: {}", response);
 
-        if (response != null && !response.getChoices().isEmpty()) {
-            return response.getChoices().get(0).getMessage().getContent();
+        if (response != null && !response.choices().isEmpty()) {
+            return response.choices().get(0).message().content();
         }
         return "추천을 생성하지 못했습니다.";
     }

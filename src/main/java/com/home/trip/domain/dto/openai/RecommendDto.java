@@ -1,17 +1,7 @@
 package com.home.trip.domain.dto.openai;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
-public class RecommendDto {
-    private String city;
-    private String country;
-    private String tripType;
-    private String period;
-    private String recommendation;
-    private List<ItineraryDto> itinerary;
-    private String estimatedBudget;
-    private String bestSeason;
+public record RecommendDto(String city, String country, String tripType, String period, String recommendation,
+                           List<ItineraryDto> itinerary, String estimatedBudget, String bestSeason) {
 }

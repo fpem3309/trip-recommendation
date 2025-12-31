@@ -27,10 +27,10 @@ public class UserService {
 
     @Transactional
     public void join(UserDto userDto) {
-        if (userRepository.existsByUserId(userDto.getUserId())) {
+        if (userRepository.existsByUserId(userDto.userId())) {
             throw new DuplicateUserIdException();
         }
-        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        String encodedPassword = passwordEncoder.encode(userDto.password());
         User user = User.createUser(userDto, encodedPassword);
         userRepository.save(user);
     }

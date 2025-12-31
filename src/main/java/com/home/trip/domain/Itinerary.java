@@ -24,8 +24,8 @@ public class Itinerary {
 
     public static Itinerary createItinerary(ItineraryDto itineraryDto) {
         return Itinerary.builder()
-                .dayNumber(itineraryDto.getDayNumber())
-                .plan(itineraryDto.getPlan())
+                .dayNumber(itineraryDto.dayNumber())
+                .plan(itineraryDto.plan())
                 .build();
     }
 

@@ -4,7 +4,5 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
-public class QuestionOrderUpdateDto {
-    private List<QuestionOrderDto> questions;
+public record QuestionOrderUpdateDto(List<QuestionOrderDto> questions) {
 }

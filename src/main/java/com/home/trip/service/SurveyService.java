@@ -125,7 +125,7 @@ public class SurveyService {
      * @param recommendDto       AI 추천 내용
      */
     private void updateRecommendation(TripRecommendation tripRecommendation, RecommendDto recommendDto) {
-        recommendDto.getItinerary()
+        recommendDto.itinerary()
                 .forEach(dto -> tripRecommendation.addItinerary(Itinerary.createItinerary(dto)));
         tripRecommendation.setRecommendationTrip(recommendDto);
     }

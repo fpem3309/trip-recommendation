@@ -42,8 +42,8 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
-                            userLoginDto.getUserId(),
-                            userLoginDto.getPassword()
+                            userLoginDto.userId(),
+                            userLoginDto.password()
                     );
 
             return authenticationManager.authenticate(authToken);

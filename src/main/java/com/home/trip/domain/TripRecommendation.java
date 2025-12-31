@@ -72,13 +72,13 @@ public class TripRecommendation {
     }
 
     public void setRecommendationTrip(RecommendDto recommendDto) {
-        this.city = recommendDto.getCity();
-        this.country = recommendDto.getCountry();
-        this.tripType = recommendDto.getTripType();
-        this.period = recommendDto.getPeriod();
-        this.recommendation = recommendDto.getRecommendation();
-        this.estimatedBudget = recommendDto.getEstimatedBudget();
-        this.bestSeason = recommendDto.getBestSeason();
+        this.city = recommendDto.city();
+        this.country = recommendDto.country();
+        this.tripType = recommendDto.tripType();
+        this.period = recommendDto.period();
+        this.recommendation = recommendDto.recommendation();
+        this.estimatedBudget = recommendDto.estimatedBudget();
+        this.bestSeason = recommendDto.bestSeason();
         this.status = RecommendationStatus.COMPLETED;
     }
 

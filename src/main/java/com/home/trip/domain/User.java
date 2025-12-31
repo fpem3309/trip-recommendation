@@ -62,14 +62,14 @@ public class User {
 
     public static User createUser(UserDto userDto, String encodedPassword) {
         return User.builder()
-                .userId(userDto.getUserId())
+                .userId(userDto.userId())
                 .password(encodedPassword)
-                .email(userDto.getEmail())
-                .nickname(userDto.getNickname())
-                .roles(userDto.getRole())
-                .oauth_provider(userDto.getOauthProvider())
-                .createdAt(userDto.getCreatedAt())
-                .updatedAt(userDto.getUpdatedAt())
+                .email(userDto.email())
+                .nickname(userDto.nickname())
+                .roles(userDto.role())
+                .oauth_provider(userDto.oauthProvider())
+                .createdAt(userDto.createdAt())
+                .updatedAt(userDto.updatedAt())
                 .status(UserStatus.ACTIVE)
                 .build();
     }

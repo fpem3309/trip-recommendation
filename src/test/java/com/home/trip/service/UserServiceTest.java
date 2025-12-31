@@ -40,8 +40,8 @@ class UserServiceTest {
         userService.join(user);
 
         // then
-        User findUser = userService.findByUserId(user.getUserId());
-        Assertions.assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
+        User findUser = userService.findByUserId(user.userId());
+        Assertions.assertThat(findUser.getUserId()).isEqualTo(user.userId());
     }
 
     @Test
