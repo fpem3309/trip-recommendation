@@ -78,6 +78,6 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         log.info("failed message: {}", failed.getMessage());
-        response.getWriter().write("{\"message\":\"" + failed.getMessage() + "\"}");
+        response.getWriter().write("{\"message\":\"일치하는 회원이 없습니다.\"}");
     }
 }

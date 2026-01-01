@@ -12,6 +12,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -107,8 +108,8 @@ class UserServiceTest {
 
         // when
         // then
-        IllegalArgumentException e = org.junit.jupiter.api.Assertions.assertThrows(
-                IllegalArgumentException.class,
+        UsernameNotFoundException e = org.junit.jupiter.api.Assertions.assertThrows(
+                UsernameNotFoundException.class,
                 () -> userService.findByUserId(userId)
         );
 
@@ -135,8 +136,8 @@ class UserServiceTest {
 
         // when
         // then
-        IllegalArgumentException e = org.junit.jupiter.api.Assertions.assertThrows(
-                IllegalArgumentException.class,
+        UsernameNotFoundException e = org.junit.jupiter.api.Assertions.assertThrows(
+                UsernameNotFoundException.class,
                 () -> userService.findRoleByUserId(userId)
         );
 
