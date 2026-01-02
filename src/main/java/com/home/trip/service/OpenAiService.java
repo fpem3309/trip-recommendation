@@ -32,8 +32,10 @@ public class OpenAiService {
 
     public String getTravelRecommendation(String userPrompt) {
 
-        Prompt prompt = promptRepository.findByRole("system").stream().findFirst()
+        Prompt prompt = promptRepository.findByRole("system")
                 .orElseThrow(() -> new IllegalStateException("정의된 프롬프트가 없습니다."));
+
+        log.info("OpenAI prompt: {}: {}", prompt.getRole(), prompt.getContent());
 
         RequestDto chatRequest = RequestDto.builder()
                 .model(model)
@@ -58,7 +60,7 @@ public class OpenAiService {
                 ResponseDto.class
         );
 
-        log.info("openAI API response: {}", response);
+        log.info("OpenAI API response: {}", response);
 
         if (response != null && !response.choices().isEmpty()) {
             return response.choices().get(0).message().content();
