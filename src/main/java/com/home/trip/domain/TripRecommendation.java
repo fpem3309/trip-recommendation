@@ -74,7 +74,7 @@ public class TripRecommendation {
     public void setRecommendationTrip(RecommendDto recommendDto) {
         this.city = recommendDto.city();
         this.country = recommendDto.country();
-        this.tripType = recommendDto.tripType();
+        this.tripType = recommendDto.transportation();
         this.period = recommendDto.period();
         this.recommendation = recommendDto.recommendation();
         this.estimatedBudget = recommendDto.estimatedBudget();
