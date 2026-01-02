@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SurveyService {
 
@@ -31,6 +31,7 @@ public class SurveyService {
      * @param response
      * @return 저장한 설문 Id
      */
+    @Transactional
     public Long save(SurveyDto surveyDto, String userId, HttpServletResponse response) {
 
         // 1. User or Guest 설정
@@ -77,6 +78,7 @@ public class SurveyService {
      * @param surveyId 추천할 설문의 Id
      * @return 추천 결과 DTO
      */
+    @Transactional
     public RecommendDto recommendation(Long surveyId) {
         try {
             Survey findSurvey = findBySurveyId(surveyId);
@@ -98,12 +100,12 @@ public class SurveyService {
     private RecommendDto getRecommend(Survey survey) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String json = objectMapper.writeValueAsString(SurveyPromptDto.createSurveyPromptDto(survey));
+            String answer = objectMapper.writeValueAsString(SurveyPromptDto.createSurveyPromptDto(survey));
 
-            log.info("json: {}", json);
+            log.info("answer: {}", answer);
 
             String prompt = "다음은 사용자가 작성한 여행 설문 응답이야. \n" +
-                    "설문 데이터:\n" + json;
+                    "설문 데이터:\n" + answer;
 
             String travelRecommendation = openAiService.getTravelRecommendation(prompt)
                     .replaceAll("```", "")

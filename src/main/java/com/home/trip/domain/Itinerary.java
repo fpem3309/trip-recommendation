@@ -1,6 +1,6 @@
 package com.home.trip.domain;
 
-import com.home.trip.domain.dto.openai.ItineraryDto;
+import com.home.trip.domain.dto.openai.RecommendDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class Itinerary {
 
     private String plan;
 
-    public static Itinerary createItinerary(ItineraryDto itineraryDto) {
+    public static Itinerary createItinerary(RecommendDto.ItineraryDto itineraryDto) {
         return Itinerary.builder()
                 .dayNumber(itineraryDto.dayNumber())
                 .plan(itineraryDto.plan())
