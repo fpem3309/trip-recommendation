@@ -1,7 +1,10 @@
 package com.home.trip.controller;
 
+import com.home.trip.domain.User;
 import com.home.trip.domain.dto.AccessTokenResponse;
+import com.home.trip.domain.dto.RecommendResponseDto;
 import com.home.trip.domain.dto.user.UserDto;
+import com.home.trip.domain.enums.RecommendationStatus;
 import com.home.trip.service.RefreshTokenService;
 import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "회원", description = "회원 관련 API")
 @Slf4j
@@ -48,5 +53,17 @@ public class UserController {
     public ResponseEntity<String> getUserInfo(Authentication auth) {
         String userId = (String) auth.getPrincipal();
         return ResponseEntity.ok(userId);
+    }
+
+    @GetMapping("/survey")
+    public ResponseEntity<List<RecommendResponseDto>> getSurvey(Authentication auth) {
+        String userId = (String) auth.getPrincipal();
+        User findUser = userService.findByUserId(userId);
+        List<RecommendResponseDto> recommendDtoList = findUser.getSurveyList().stream()
+                .filter(survey -> survey.getTripRecommendation().getStatus().equals(RecommendationStatus.COMPLETED))
+                .map(survey -> RecommendResponseDto.createRecommendDto(survey.getTripRecommendation()))
+                .toList();
+
+        return ResponseEntity.ok(recommendDtoList);
     }
 }

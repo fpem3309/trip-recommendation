@@ -27,7 +27,7 @@ public class TripRecommendation {
 
     private String city;
     private String country;
-    private String tripType;
+    private String transportation;
     private String period;
     private String recommendation;
 
@@ -74,7 +74,7 @@ public class TripRecommendation {
     public void setRecommendationTrip(RecommendDto recommendDto) {
         this.city = recommendDto.city();
         this.country = recommendDto.country();
-        this.tripType = recommendDto.transportation();
+        this.transportation = recommendDto.transportation();
         this.period = recommendDto.period();
         this.recommendation = recommendDto.recommendation();
         this.estimatedBudget = recommendDto.estimatedBudget();
