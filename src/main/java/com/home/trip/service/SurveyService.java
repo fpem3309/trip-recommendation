@@ -127,8 +127,15 @@ public class SurveyService {
      * @param recommendDto       AI 추천 내용
      */
     private void updateRecommendation(TripRecommendation tripRecommendation, RecommendDto recommendDto) {
+
+        // 추천 일자별 계획
         recommendDto.itinerary()
                 .forEach(dto -> tripRecommendation.addItinerary(Itinerary.createItinerary(dto)));
+
+        // 추천 일자별 장소
+        recommendDto.googleMapPlaces()
+                        .forEach(dto-> tripRecommendation.addMapPlaces(MapPlace.createMapPlace(dto)));
+
         tripRecommendation.setRecommendationTrip(recommendDto);
     }
 }
