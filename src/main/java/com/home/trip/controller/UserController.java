@@ -1,11 +1,11 @@
 package com.home.trip.controller;
 
-import com.home.trip.domain.User;
 import com.home.trip.domain.dto.AccessTokenResponse;
 import com.home.trip.domain.dto.RecommendResponseDto;
+import com.home.trip.domain.dto.SurveyDataResponseDto;
 import com.home.trip.domain.dto.user.UserDto;
-import com.home.trip.domain.enums.RecommendationStatus;
 import com.home.trip.service.RefreshTokenService;
+import com.home.trip.service.SurveyService;
 import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +25,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
+    private final SurveyService surveyService;
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "새로운 회원을 등록")
@@ -56,14 +57,15 @@ public class UserController {
     }
 
     @GetMapping("/survey")
-    public ResponseEntity<List<RecommendResponseDto>> getSurvey(Authentication auth) {
+    public ResponseEntity<List<RecommendResponseDto>> getSurveyList(Authentication auth) {
         String userId = (String) auth.getPrincipal();
-        User findUser = userService.findByUserId(userId);
-        List<RecommendResponseDto> recommendDtoList = findUser.getSurveyList().stream()
-                .filter(survey -> survey.getTripRecommendation().getStatus().equals(RecommendationStatus.COMPLETED))
-                .map(survey -> RecommendResponseDto.createRecommendDto(survey.getTripRecommendation()))
-                .toList();
+        List<RecommendResponseDto> userSurveyList = surveyService.getUserSurveyReulstList(userId);
+        return ResponseEntity.ok(userSurveyList);
+    }
 
-        return ResponseEntity.ok(recommendDtoList);
+    @GetMapping("/survey/{surveyId}")
+    public ResponseEntity<SurveyDataResponseDto> getSurvey(@PathVariable Long surveyId) {
+        SurveyDataResponseDto surveyResult = surveyService.getSurveyResult(surveyId);
+        return ResponseEntity.ok(surveyResult);
     }
 }

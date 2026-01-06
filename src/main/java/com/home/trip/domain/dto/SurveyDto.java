@@ -1,7 +1,9 @@
 package com.home.trip.domain.dto;
 
+import com.home.trip.domain.SurveyAnswer;
 import com.home.trip.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,8 +19,16 @@ public class SurveyDto {
 
     @Data
     @AllArgsConstructor
+    @Builder
     public static class SurveyAnswerDto{
         private Long questionId;
         private String answer;
+
+        public static SurveyAnswerDto createSurveyAnswerDto(SurveyAnswer surveyAnswer) {
+            return SurveyAnswerDto.builder()
+                    .questionId(surveyAnswer.getQuestionId())
+                    .answer(surveyAnswer.getAnswer())
+                    .build();
+        }
     }
 }

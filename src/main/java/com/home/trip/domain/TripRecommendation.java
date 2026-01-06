@@ -35,6 +35,10 @@ public class TripRecommendation {
     @Builder.Default // ❗️Builder로 객체를 생성하면 itinerary는 null 상태가 됨
     private List<Itinerary> itinerary = new ArrayList<>();
 
+    @OneToMany(mappedBy = "tripRecommendation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default // ❗️Builder로 객체를 생성하면 itinerary는 null 상태가 됨
+    private List<MapPlace> mapPlaceList = new ArrayList<>();
+
     private String estimatedBudget;
     private String bestSeason;
 
@@ -80,6 +84,14 @@ public class TripRecommendation {
         this.estimatedBudget = recommendDto.estimatedBudget();
         this.bestSeason = recommendDto.bestSeason();
         this.status = RecommendationStatus.COMPLETED;
+    }
+    /**
+     * 답변 편의 메서드(주인이 아닌쪽)
+     * @param mapPlace 추천 일자별 장소
+     */
+    public void addMapPlaces(MapPlace mapPlace) {
+        mapPlaceList.add(mapPlace);
+        mapPlace.confirmTripRecommendation(this);
     }
 
 }

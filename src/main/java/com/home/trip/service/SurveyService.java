@@ -3,15 +3,20 @@ package com.home.trip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.trip.domain.*;
+import com.home.trip.domain.dto.RecommendResponseDto;
+import com.home.trip.domain.dto.SurveyDataResponseDto;
 import com.home.trip.domain.dto.SurveyDto;
 import com.home.trip.domain.dto.openai.RecommendDto;
 import com.home.trip.domain.dto.openai.SurveyPromptDto;
+import com.home.trip.domain.enums.RecommendationStatus;
 import com.home.trip.repository.SurveyRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -134,8 +139,57 @@ public class SurveyService {
 
         // 추천 일자별 장소
         recommendDto.googleMapPlaces()
-                        .forEach(dto-> tripRecommendation.addMapPlaces(MapPlace.createMapPlace(dto)));
+                .forEach(dto -> tripRecommendation.addMapPlaces(MapPlace.createMapPlace(dto)));
 
         tripRecommendation.setRecommendationTrip(recommendDto);
+    }
+
+    /**
+     * 회원의 설문 추천 결과 리스트
+     *
+     * @param userId 회원 아이디
+     * @return 추천 결과
+     */
+    public List<RecommendResponseDto> getUserSurveyReulstList(String userId) {
+        User findUser = userService.findByUserId(userId);
+        return findUser.getSurveyList().stream()
+                .filter(survey -> survey.getTripRecommendation().getStatus().equals(RecommendationStatus.COMPLETED))
+                .map(survey -> RecommendResponseDto.createRecommendDto(survey.getTripRecommendation()))
+                .toList();
+    }
+
+    /**
+     * 회원의 설문의 추천 결과, 질문&답변, 일자별 계획, 일자별 장소
+     *
+     * @param surveyId 설문 아이디
+     * @return 질문&답변 및 모든 추천 결과
+     */
+    public SurveyDataResponseDto getSurveyResult(Long surveyId) {
+        Survey findSurvey = findBySurveyId(surveyId);
+
+        // 추천 결과
+        TripRecommendation tripRecommendation = findSurvey.getTripRecommendation();
+
+        if (!tripRecommendation.getStatus().equals(RecommendationStatus.COMPLETED)) {
+            throw new IllegalArgumentException("완료되지 않은 설문입니다.");
+        }
+
+        // 질문:답 형태 리스트
+        List<SurveyDto.SurveyAnswerDto> surveyAnswerDtoList = findSurvey.getSurveyAnswers().stream()
+                .map(SurveyDto.SurveyAnswerDto::createSurveyAnswerDto)
+                .toList();
+
+        // 일자별 계획 리스트
+        List<RecommendDto.ItineraryDto> itineraryDtoList = tripRecommendation.getItinerary().stream()
+                .map(RecommendDto.ItineraryDto::createRecommendItineraryDto)
+                .toList();
+
+        // 일자별 장소 구글맵 리스트
+        List<RecommendDto.PlaceDto> placeDtoList = tripRecommendation.getMapPlaceList().stream()
+                .map(RecommendDto.PlaceDto::createRecommendPlaceDto)
+                .toList();
+
+        RecommendResponseDto recommendDto = RecommendResponseDto.createRecommendDto(tripRecommendation);
+        return SurveyDataResponseDto.createRecommendNAnswerDto(surveyAnswerDtoList, itineraryDtoList, placeDtoList, recommendDto, findSurvey.getCreatedAt());
     }
 }
