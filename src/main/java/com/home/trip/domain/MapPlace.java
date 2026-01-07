@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -23,12 +28,13 @@ public class MapPlace {
 
     private int dayNumber;
 
-    private String place;
+    @JdbcTypeCode(SqlTypes.JSON) // JSON 타입으로 저장
+    private List<String> places = new ArrayList<>();
 
     public static MapPlace createMapPlace(RecommendDto.PlaceDto placeDto) {
         return MapPlace.builder()
                 .dayNumber(placeDto.dayNumber())
-                .place(String.join(",", placeDto.places()))
+                .places(placeDto.places())
                 .build();
     }
 

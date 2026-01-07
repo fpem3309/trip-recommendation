@@ -4,7 +4,6 @@ import com.home.trip.domain.Itinerary;
 import com.home.trip.domain.MapPlace;
 import lombok.Builder;
 
-import java.util.Arrays;
 import java.util.List;
 
 public record RecommendDto(String city, String country, String transportation, String period, String recommendation,
@@ -26,7 +25,7 @@ public record RecommendDto(String city, String country, String transportation, S
         public static PlaceDto createRecommendPlaceDto(MapPlace mapPlace) {
             return PlaceDto.builder()
                     .dayNumber(mapPlace.getDayNumber())
-                    .places(Arrays.asList(mapPlace.getPlace().split(",")))
+                    .places(mapPlace.getPlaces())
                     .build();
         }
     }
