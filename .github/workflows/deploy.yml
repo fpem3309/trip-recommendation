@@ -18,6 +18,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Run Tests
+        env:
+          SPRING_MONGODB_URI: ${{ secrets.SPRING_MONGODB_URI }}
+        run: ./gradlew test
+
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
