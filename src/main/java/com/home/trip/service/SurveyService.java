@@ -7,7 +7,7 @@ import com.home.trip.domain.dto.RecommendResponseDto;
 import com.home.trip.domain.dto.SurveyDataResponseDto;
 import com.home.trip.domain.dto.SurveyDto;
 import com.home.trip.domain.dto.openai.RecommendDto;
-import com.home.trip.domain.dto.openai.SurveyPromptDto;
+import com.home.trip.domain.dto.openai.SurveyAnswerDto;
 import com.home.trip.domain.enums.RecommendationStatus;
 import com.home.trip.repository.SurveyRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -105,7 +105,7 @@ public class SurveyService {
     private RecommendDto getRecommend(Survey survey) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String answer = objectMapper.writeValueAsString(SurveyPromptDto.createSurveyPromptDto(survey));
+            String answer = objectMapper.writeValueAsString(SurveyAnswerDto.createSurveyPromptDto(survey));
 
             log.info("answer: {}", answer);
 

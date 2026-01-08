@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface PromptRepository extends MongoRepository<Prompt, String> {
     @Query("{ 'role': 'system', 'isActive': 1 }")
-    Optional<Prompt> findByRole(String role);
+    Optional<Prompt> findActiveByRole(String role);
 }

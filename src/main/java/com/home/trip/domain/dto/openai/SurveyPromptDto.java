@@ -1,18 +1,16 @@
 package com.home.trip.domain.dto.openai;
 
-import com.home.trip.domain.Survey;
-import com.home.trip.domain.SurveyAnswer;
+import com.home.trip.domain.Prompt;
 import lombok.Builder;
 
-import java.util.List;
-
 @Builder
-public record SurveyPromptDto(List<String> answers) {
-    public static SurveyPromptDto createSurveyPromptDto(Survey survey) {
+public record SurveyPromptDto(String id, String role, String content, Integer isActive) {
+    public static SurveyPromptDto createSurveyPromptDto(Prompt prompt) {
         return SurveyPromptDto.builder()
-                .answers(survey.getSurveyAnswers().stream()
-                        .map(SurveyAnswer::getAnswer)
-                        .toList())
+                .id(prompt.getId())
+                .role(prompt.getRole())
+                .content(prompt.getContent())
+                .isActive(prompt.getIsActive())
                 .build();
     }
 }

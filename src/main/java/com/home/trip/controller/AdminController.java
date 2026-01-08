@@ -1,10 +1,12 @@
 package com.home.trip.controller;
 
 import com.home.trip.domain.Question;
+import com.home.trip.domain.dto.openai.SurveyPromptDto;
 import com.home.trip.domain.dto.user.UserDto;
 import com.home.trip.domain.dto.question.QuestionDto;
 import com.home.trip.domain.dto.question.QuestionOrderUpdateDto;
 import com.home.trip.domain.dto.user.UserUpdateDto;
+import com.home.trip.service.OpenAiService;
 import com.home.trip.service.QuestionService;
 import com.home.trip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,7 @@ public class AdminController {
 
     private final QuestionService questionService;
     private final UserService userService;
+    private final OpenAiService openAiService;
 
     @Operation(summary = "메인 페이지", description = "관리자 메인 페이지")
     @GetMapping
@@ -49,7 +52,7 @@ public class AdminController {
     @PostMapping("/questions")
     public ResponseEntity<String> addQuestion(@RequestBody QuestionDto questionDto) {
         questionService.insertQuestion(questionDto);
-        return ResponseEntity.ok("insert");
+        return ResponseEntity.ok("saved");
     }
 
     @Operation(summary = "질문 삭제", description = "해당 id(_id) 질문 1개 삭제")
@@ -73,6 +76,34 @@ public class AdminController {
         return ResponseEntity.ok("updated");
     }
 
+    @Operation(summary = "프롬프트 관리 페이지", description ="프롬프트 리스트")
+    @GetMapping("/prompt")
+    public ResponseEntity<List<SurveyPromptDto>> getPrompts() {
+        List<SurveyPromptDto> allPrompts = openAiService.findAllPrompts();
+        return ResponseEntity.ok(allPrompts);
+    }
+
+    @Operation(summary = "프롬프트 등록", description = "프롬프트 새로 1개 등록")
+    @PostMapping("/prompt")
+    public ResponseEntity<String> savePrompt(@RequestBody SurveyPromptDto surveyPromptDto) {
+        openAiService.savePrompt(surveyPromptDto);
+        return ResponseEntity.ok("saved");
+    }
+
+    @Operation(summary = "프롬프트 수정", description ="프롬프트 글 수정 및 활성화")
+    @PatchMapping("/prompt/{promptId}")
+    public ResponseEntity<String> updatePromptActivate(@PathVariable String promptId, @RequestBody SurveyPromptDto surveyPromptDto) {
+        openAiService.updatePrompt(promptId, surveyPromptDto);
+        return ResponseEntity.ok("updated");
+    }
+
+    @Operation(summary = "프롬프트 삭제", description ="프롬프트 글 1개 삭제")
+    @DeleteMapping("/prompt/{promptId}")
+    public ResponseEntity<String> deletePrompt(@PathVariable String promptId) {
+        openAiService.deletePrompt(promptId);
+        return ResponseEntity.ok("deleted");
+    }
+
     @Operation(summary = "회원 관리 페이지", description = "회원 리스트 및 페이징")
     @GetMapping("/users")
     public ResponseEntity<Page<UserDto>> getUsers(Pageable pageable) {
@@ -93,4 +124,5 @@ public class AdminController {
         userService.deleteUser(userId);
         return ResponseEntity.ok("deleted " + userId);
     }
+
 }

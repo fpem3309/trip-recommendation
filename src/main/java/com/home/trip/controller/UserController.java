@@ -49,13 +49,7 @@ public class UserController {
         return ResponseEntity.ok(new AccessTokenResponse(refreshToken));
     }
 
-    @GetMapping("/me")
-    @Operation(summary = "회원 조회", description = "로그인한 회원의 아이디 정보를 조회\n - 성공시 회원 정보\n - Access Token 없거나 만료시 401")
-    public ResponseEntity<String> getUserInfo(Authentication auth) {
-        String userId = (String) auth.getPrincipal();
-        return ResponseEntity.ok(userId);
-    }
-
+    @Operation(summary = "회원의 설문 리스트", description = "로그인한 회원의 설문 리스트")
     @GetMapping("/survey")
     public ResponseEntity<List<RecommendResponseDto>> getSurveyList(Authentication auth) {
         String userId = (String) auth.getPrincipal();
@@ -63,6 +57,7 @@ public class UserController {
         return ResponseEntity.ok(userSurveyList);
     }
 
+    @Operation(summary = "회원의 설문", description = "로그인한 회원의 설문 1개")
     @GetMapping("/survey/{surveyId}")
     public ResponseEntity<SurveyDataResponseDto> getSurvey(@PathVariable Long surveyId) {
         SurveyDataResponseDto surveyResult = surveyService.getSurveyResult(surveyId);
