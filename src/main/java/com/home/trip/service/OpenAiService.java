@@ -114,10 +114,11 @@ public class OpenAiService {
      *
      * @param surveyPromptDto 저장할 프롬프트 정보
      */
-    public void savePrompt(SurveyPromptDto surveyPromptDto) {
+    public String savePrompt(SurveyPromptDto surveyPromptDto) {
         Prompt prompt = Prompt.createPrompt(surveyPromptDto);
         deactivateActivePrompt(surveyPromptDto);
         promptRepository.save(prompt);
+        return prompt.getId();
     }
 
     /**
@@ -126,12 +127,13 @@ public class OpenAiService {
      * @param surveyPromptDto 업데이트할 프롬프트 정보
      * @throws IllegalArgumentException 해당 Id를 가진 Prompt가 없을 때
      */
-    public void updatePrompt(String promptId, SurveyPromptDto surveyPromptDto) {
+    public String updatePrompt(String promptId, SurveyPromptDto surveyPromptDto) {
         Prompt findPrompt = findPromptById(promptId)
                 .orElseThrow(() -> new IllegalArgumentException("정의된 프롬프트가 없습니다."));
         deactivateActivePrompt(surveyPromptDto);
         findPrompt.setSurveyPrompt(surveyPromptDto); // 정보 업데이트
         promptRepository.save(findPrompt);
+        return findPrompt.getId();
     }
 
     /**
@@ -155,9 +157,10 @@ public class OpenAiService {
      * @param promptId 삭제할 프롬프트 Id(_id)
      * @throws IllegalArgumentException 해당 Id를 가진 Prompt가 없을 때
      */
-    public void deletePrompt(String promptId) {
+    public String deletePrompt(String promptId) {
         Prompt findPrompt = findPromptById(promptId)
                 .orElseThrow(() -> new IllegalArgumentException("정의된 프롬프트가 없습니다."));
         promptRepository.delete(findPrompt);
+        return findPrompt.getId();
     }
 }

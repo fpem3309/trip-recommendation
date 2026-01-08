@@ -2,9 +2,9 @@ package com.home.trip.controller;
 
 import com.home.trip.domain.Question;
 import com.home.trip.domain.dto.openai.SurveyPromptDto;
-import com.home.trip.domain.dto.user.UserDto;
 import com.home.trip.domain.dto.question.QuestionDto;
 import com.home.trip.domain.dto.question.QuestionOrderUpdateDto;
+import com.home.trip.domain.dto.user.UserDto;
 import com.home.trip.domain.dto.user.UserUpdateDto;
 import com.home.trip.service.OpenAiService;
 import com.home.trip.service.QuestionService;
@@ -76,7 +76,7 @@ public class AdminController {
         return ResponseEntity.ok("updated");
     }
 
-    @Operation(summary = "프롬프트 관리 페이지", description ="프롬프트 리스트")
+    @Operation(summary = "프롬프트 관리 페이지", description = "프롬프트 리스트")
     @GetMapping("/prompt")
     public ResponseEntity<List<SurveyPromptDto>> getPrompts() {
         List<SurveyPromptDto> allPrompts = openAiService.findAllPrompts();
@@ -86,22 +86,22 @@ public class AdminController {
     @Operation(summary = "프롬프트 등록", description = "프롬프트 새로 1개 등록")
     @PostMapping("/prompt")
     public ResponseEntity<String> savePrompt(@RequestBody SurveyPromptDto surveyPromptDto) {
-        openAiService.savePrompt(surveyPromptDto);
-        return ResponseEntity.ok("saved");
+        String savedId = openAiService.savePrompt(surveyPromptDto);
+        return ResponseEntity.ok("saved " + savedId);
     }
 
-    @Operation(summary = "프롬프트 수정", description ="프롬프트 글 수정 및 활성화")
+    @Operation(summary = "프롬프트 수정", description = "프롬프트 글 수정 및 활성화")
     @PatchMapping("/prompt/{promptId}")
     public ResponseEntity<String> updatePromptActivate(@PathVariable String promptId, @RequestBody SurveyPromptDto surveyPromptDto) {
-        openAiService.updatePrompt(promptId, surveyPromptDto);
-        return ResponseEntity.ok("updated");
+        String updatedId = openAiService.updatePrompt(promptId, surveyPromptDto);
+        return ResponseEntity.ok("updated " + updatedId);
     }
 
-    @Operation(summary = "프롬프트 삭제", description ="프롬프트 글 1개 삭제")
+    @Operation(summary = "프롬프트 삭제", description = "프롬프트 글 1개 삭제")
     @DeleteMapping("/prompt/{promptId}")
     public ResponseEntity<String> deletePrompt(@PathVariable String promptId) {
-        openAiService.deletePrompt(promptId);
-        return ResponseEntity.ok("deleted");
+        String deletedId = openAiService.deletePrompt(promptId);
+        return ResponseEntity.ok("deleted " + deletedId);
     }
 
     @Operation(summary = "회원 관리 페이지", description = "회원 리스트 및 페이징")
