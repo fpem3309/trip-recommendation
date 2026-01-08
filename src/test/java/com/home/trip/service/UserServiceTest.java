@@ -9,10 +9,12 @@ import com.home.trip.exception.DuplicateUserIdException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class UserServiceTest {
 
@@ -28,6 +31,17 @@ class UserServiceTest {
 
     @PersistenceContext
     EntityManager em;
+
+    @BeforeEach
+    void setup() {
+        // 테스트 전 회원 생성
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ROLE_USER);
+        roles.add(Role.ROLE_ADMIN);
+        UserDto user = new UserDto("member", "123", "member@member.com",
+                "member", roles, null, LocalDateTime.now(), LocalDateTime.now());
+        userService.join(user);
+    }
 
     @Test
     void 회원가입() throws Exception {
@@ -92,7 +106,7 @@ class UserServiceTest {
     @Test
     void 회원_검색() throws Exception {
         // given
-        String userId = "test";
+        String userId = "member";
 
         // when
         User findUser = userService.findByUserId(userId);
@@ -119,7 +133,7 @@ class UserServiceTest {
     @Test
     void 회원_권한_검색() throws Exception {
         // given
-        String userId = "test";
+        String userId = "member";
 
         // when
         String role = userService.findRoleByUserId(userId);
@@ -148,7 +162,7 @@ class UserServiceTest {
     void 회원_정보_업데이트() throws Exception {
         // given
         UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setUserId("test");
+        userUpdateDto.setUserId("member");
         userUpdateDto.setEmail("email2"); // 바뀜
         userUpdateDto.setNickname(""); // 안바뀜
 
@@ -168,7 +182,7 @@ class UserServiceTest {
     @Test
     void 회원_탈퇴() throws Exception {
         // given
-        String userId = "test2";
+        String userId = "member";
 
         // when
         userService.deleteUser(userId);
@@ -181,9 +195,11 @@ class UserServiceTest {
     @Test
     void 이미_탈퇴된_회원_예외발생() throws Exception {
         // given
-        String userId = "test";
+        String userId = "member";
 
         // when
+        userService.deleteUser(userId);
+
         // then
         IllegalStateException e = org.junit.jupiter.api.Assertions.assertThrows(
                 IllegalStateException.class,
@@ -192,4 +208,5 @@ class UserServiceTest {
 
         Assertions.assertThat(e.getMessage()).isEqualTo("이미 탈퇴 처리된 회원입니다.");
     }
+
 }
