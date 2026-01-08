@@ -1,0 +1,30 @@
+# DB ?? (H2 ??)
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+# JPA ??
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+# MongoDB ??
+  data:
+    mongodb:
+      uri: ${SPRING_MONGODB_URI}
+
+# Redis ??
+    redis:
+        host: localhost
+        port: 6379
+
+openai:
+  api:
+    key: "openAI-api-key"
+    model: gpt-4o-mini
+  base-url: https://api.openai.com/v1
