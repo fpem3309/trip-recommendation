@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
+@Transactional(value = "mongoTransactionManager")
 class OpenAiServiceTest {
 
     @Autowired
