@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OpenAiService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final PromptRepository promptRepository;
@@ -114,6 +116,7 @@ public class OpenAiService {
      *
      * @param surveyPromptDto 저장할 프롬프트 정보
      */
+    @Transactional
     public String savePrompt(SurveyPromptDto surveyPromptDto) {
         Prompt prompt = Prompt.createPrompt(surveyPromptDto);
         deactivateActivePrompt(surveyPromptDto);
@@ -127,6 +130,7 @@ public class OpenAiService {
      * @param surveyPromptDto 업데이트할 프롬프트 정보
      * @throws IllegalArgumentException 해당 Id를 가진 Prompt가 없을 때
      */
+    @Transactional
     public String updatePrompt(String promptId, SurveyPromptDto surveyPromptDto) {
         Prompt findPrompt = findPromptById(promptId)
                 .orElseThrow(() -> new IllegalArgumentException("정의된 프롬프트가 없습니다."));
@@ -157,6 +161,7 @@ public class OpenAiService {
      * @param promptId 삭제할 프롬프트 Id(_id)
      * @throws IllegalArgumentException 해당 Id를 가진 Prompt가 없을 때
      */
+    @Transactional
     public String deletePrompt(String promptId) {
         Prompt findPrompt = findPromptById(promptId)
                 .orElseThrow(() -> new IllegalArgumentException("정의된 프롬프트가 없습니다."));
