@@ -28,6 +28,7 @@ public class SurveyController {
 
         String userId = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getName)
+                .filter(name -> !name.equals("anonymousUser"))
                 .orElse(null);
 
         Long surveyId = surveyService.save(surveyDto, userId, response);
