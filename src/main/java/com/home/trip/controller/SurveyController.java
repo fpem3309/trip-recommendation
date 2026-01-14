@@ -1,16 +1,20 @@
 package com.home.trip.controller;
+
 import com.home.trip.domain.dto.SurveyDto;
 import com.home.trip.domain.dto.openai.RecommendDto;
 import com.home.trip.service.SurveyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
@@ -24,14 +28,14 @@ public class SurveyController {
 
     @Operation(summary = "설문 등록", description = "작성한 설문을 등록하고 AI 여행지 추천받기")
     @PostMapping
-    public ResponseEntity<RecommendDto> saveSurvey(@RequestBody SurveyDto surveyDto, HttpServletResponse response) {
+    public ResponseEntity<RecommendDto> saveSurvey(@RequestBody SurveyDto surveyDto, HttpServletRequest request) {
 
         String userId = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getName)
                 .filter(name -> !name.equals("anonymousUser"))
                 .orElse(null);
 
-        Long surveyId = surveyService.save(surveyDto, userId, response);
+        Long surveyId = surveyService.save(surveyDto, userId, request);
         RecommendDto recommendDto = surveyService.recommendation(surveyId);
         return ResponseEntity.ok(recommendDto);
     }

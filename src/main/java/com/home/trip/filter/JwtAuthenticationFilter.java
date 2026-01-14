@@ -39,7 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // 2. 토큰 타입 체크
                 if (jwtUtil.isGuestToken(claims)) { // guest: 인증 생성하지 않고 다음 필터로
-                    log.info("Guest token detected - skip authentication");
+                    log.info("Guest token detected - skip authentication: {}", accessToken);
+                    request.setAttribute("X-Guest-Token", accessToken);
                     filterChain.doFilter(request, response);
                     return;
                 }
@@ -54,6 +55,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 setAuthentication(claims.getSubject(), (String) claims.get("role"));
             } else { // accessToken 없으면 guest token 생성
                 String guestToken = jwtUtil.generateGuestToken();
+                log.info("Generated guestToken: {}", guestToken);
+                request.setAttribute("X-Guest-Token", guestToken);
                 response.setHeader("X-Guest-Token", guestToken);
             }
 
@@ -73,8 +76,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * 예외 발생시 메시지와 함께 JSON으로 응답(401)
+     *
      * @param response
-     * @param message 예외 메시지(만료 또는 유효하지 않는 토큰)
+     * @param message  예외 메시지(만료 또는 유효하지 않는 토큰)
      * @throws IOException
      */
     private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {
@@ -85,6 +89,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * header에서 Access Token 가져오기
+     *
      * @param request
      * @return 토큰 있으면 토큰, 아니면 null
      */
@@ -98,8 +103,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * SecurityContextHolder에 사용자 인증 정보 등록
+     *
      * @param userId 사용자 ID
-     * @param role 사용자 권한
+     * @param role   사용자 권한
      */
     private static void setAuthentication(String userId, String role) {
         List<SimpleGrantedAuthority> authorities = Stream.of(role.split(","))

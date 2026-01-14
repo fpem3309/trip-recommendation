@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,15 +29,31 @@ class SurveyServiceTest {
     TripRecommendationRepository tripRecommendationRepository;
 
     @Test
+    void 게스트_토큰_가져오기() throws Exception {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String guestToken = "test-guest-token";
+
+        // when
+        request.setAttribute("X-Guest-Token", guestToken);
+        String attribute = (String) request.getAttribute("X-Guest-Token");
+
+
+        // then
+        Assertions.assertThat(attribute).isEqualTo(guestToken);
+
+    }
+
+    @Test
     void 설문_저장() throws Exception {
         // given
         SurveyDto surveyDto = getSurveyDto();
         String userId = null;
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setHeader("X-Guest-Token", "test-guest-token");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setAttribute("X-Guest-Token", "test-guest-token");
 
         // when
-        Long savedId = surveyService.save(surveyDto, userId, response);
+        Long savedId = surveyService.save(surveyDto, userId, request);
         Survey findSurvey = surveyService.findBySurveyId(savedId);
 
         // then
@@ -48,10 +65,10 @@ class SurveyServiceTest {
         // given
         SurveyDto surveyDto = getSurveyDto();
         String userId = null;
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpServletRequest request = new MockHttpServletRequest();
 
         // when
-        Long savedId = surveyService.save(surveyDto, userId, response);
+        Long savedId = surveyService.save(surveyDto, userId, request);
         Survey findSurvey = surveyService.findBySurveyId(savedId);
 
         // then
@@ -77,10 +94,10 @@ class SurveyServiceTest {
         SurveyDto surveyDto = getSurveyDto();
         String userId = null;
         MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setHeader("X-Guest-Token", "test-guest-token");
+        MockHttpServletRequest request = new MockHttpServletRequest();
 
         // when
-        Long savedId = surveyService.save(surveyDto, userId, response);
+        Long savedId = surveyService.save(surveyDto, userId, request);
         Survey findSurvey = surveyService.findBySurveyId(savedId);
 
         // then
@@ -120,16 +137,16 @@ class SurveyServiceTest {
 
     private static SurveyDto getSurveyDto() {
         List<SurveyDto.SurveyAnswerDto> answerDtoList = new ArrayList<>();
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(0L,"국내여행"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(1L,"5"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(2L,"2"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(3L,"1000000"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(4L,"자연"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(5L,"렌탈"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(6L,"여유롭게"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(7L,"4"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(8L,"에어비엔비"));
-        answerDtoList.add(new SurveyDto.SurveyAnswerDto(9L,"커플"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(0L, "국내여행"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(1L, "5"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(2L, "2"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(3L, "1000000"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(4L, "자연"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(5L, "렌탈"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(6L, "여유롭게"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(7L, "4"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(8L, "에어비엔비"));
+        answerDtoList.add(new SurveyDto.SurveyAnswerDto(9L, "커플"));
         return new SurveyDto(null, "guest-12345", answerDtoList, LocalDateTime.now());
     }
 }

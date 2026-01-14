@@ -10,7 +10,7 @@ import com.home.trip.domain.dto.openai.RecommendDto;
 import com.home.trip.domain.dto.openai.SurveyAnswerDto;
 import com.home.trip.domain.enums.RecommendationStatus;
 import com.home.trip.repository.SurveyRepository;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,18 +33,20 @@ public class SurveyService {
      *
      * @param surveyDto 설문 답변
      * @param userId    회원 Id
-     * @param response
+     * @param request
      * @return 저장한 설문 Id
      */
     @Transactional
-    public Long save(SurveyDto surveyDto, String userId, HttpServletResponse response) {
+    public Long save(SurveyDto surveyDto, String userId, HttpServletRequest request) {
 
         // 1. User or Guest 설정
         if (userId != null) { // 로그인 회원
             User findUser = userService.findByUserId(userId);
+            log.info("userId: {}", userId);
             surveyDto.setUser(findUser);
         } else { // 게스트
-            String guestToken = response.getHeader("X-Guest-Token");
+            String guestToken = (String) request.getAttribute("X-Guest-Token");
+            log.info("guestToken: {}", guestToken);
             surveyDto.setGuestToken(guestToken);
         }
 
