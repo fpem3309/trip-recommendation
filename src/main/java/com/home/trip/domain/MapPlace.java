@@ -29,6 +29,7 @@ public class MapPlace {
     private int dayNumber;
 
     @JdbcTypeCode(SqlTypes.JSON) // JSON 타입으로 저장
+    @Column(columnDefinition = "longtext")
     private List<String> places = new ArrayList<>();
 
     public static MapPlace createMapPlace(RecommendDto.PlaceDto placeDto) {
